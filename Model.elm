@@ -9,13 +9,13 @@ type alias Model =
 
 
 init : ( Model, Cmd a )
-init = allTilesMatrix
-    -- ( { matrix =
-    --         Matrix.repeat 4 4 (Nothing)
-    --             |> Matrix.set 0 0 (Just 2)
-    --   }
-    -- , Cmd.none
-    -- )
+init = --allTilesMatrix
+    ( { matrix =
+            Matrix.repeat 4 4 (Nothing)
+                |> Matrix.set 0 0 (Just 2)
+      }
+    , Cmd.none
+    )
 
 allTilesMatrix : ( Model, Cmd a )
 allTilesMatrix =
