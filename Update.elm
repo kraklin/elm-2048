@@ -156,25 +156,16 @@ transpose matrix =
 
 mergeTiles : List Int -> List Int
 mergeTiles listToMerge =
-    let
-        firstItem =
-            Maybe.withDefault 0 (List.head listToMerge)
-
-        firstTail =
-            Maybe.withDefault [] (List.tail listToMerge)
-
-        secondItem =
-            Maybe.withDefault 0 (List.head (firstTail))
-
-        restOfItems =
-            Maybe.withDefault [] (List.tail (firstTail))
+    let filteredList =
+        listToMerge |> List.filter (\i -> i /= 0)
     in
-        if (firstItem == 0) then
-            []
-        else if (firstItem /= 0 && firstItem == secondItem) then
-            List.append [ (firstItem * 2) ] (mergeTiles restOfItems)
-        else
-            firstItem :: mergeTiles (List.filter (\i -> i /= 0) firstTail)
+    case filteredList of
+        firstItem :: secondItem :: rest -> 
+            if firstItem == secondItem then
+                (firstItem * 2) :: (mergeTiles rest)
+            else
+                firstItem :: mergeTiles (secondItem :: rest)
+        _ -> listToMerge
 
 
 convertFromMaybes : List (Maybe Int) -> List Int
