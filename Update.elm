@@ -18,22 +18,27 @@ update msg model =
     case msg of
         KeyMsg code ->
             case code of
-                37 -> testAndMove model moveLeft
+                37 ->
+                    testAndMove model moveLeft
 
-                38 -> testAndMove model moveUp
+                38 ->
+                    testAndMove model moveUp
 
-                39 -> testAndMove model moveRight
+                39 ->
+                    testAndMove model moveRight
 
-                40 -> testAndMove model moveDown
+                40 ->
+                    testAndMove model moveDown
 
                 _ ->
                     ( model, Cmd.none )
 
         SpawnTile ->
             let
-                coordsCount = model.matrix
-                    |> getCoordinatesOfEmptySpace
-                    |> List.length
+                coordsCount =
+                    model.matrix
+                        |> getCoordinatesOfEmptySpace
+                        |> List.length
             in
                 ( model, Random.generate NewTile (Random.int 1 coordsCount) )
 
@@ -156,16 +161,19 @@ transpose matrix =
 
 mergeTiles : List Int -> List Int
 mergeTiles listToMerge =
-    let filteredList =
-        listToMerge |> List.filter (\i -> i /= 0)
+    let
+        filteredList =
+            listToMerge |> List.filter (\i -> i /= 0)
     in
-    case filteredList of
-        firstItem :: secondItem :: rest -> 
-            if firstItem == secondItem then
-                (firstItem * 2) :: (mergeTiles rest)
-            else
-                firstItem :: mergeTiles (secondItem :: rest)
-        _ -> listToMerge
+        case filteredList of
+            firstItem :: secondItem :: rest ->
+                if firstItem == secondItem then
+                    (firstItem * 2) :: (mergeTiles rest)
+                else
+                    firstItem :: mergeTiles (secondItem :: rest)
+
+            _ ->
+                listToMerge
 
 
 convertFromMaybes : List (Maybe Int) -> List Int
