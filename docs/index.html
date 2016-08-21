@@ -9199,6 +9199,68 @@ var _elm_lang$keyboard$Keyboard$subMap = F2(
 			});
 	});
 _elm_lang$core$Native_Platform.effectManagers['Keyboard'] = {pkg: 'elm-lang/keyboard', init: _elm_lang$keyboard$Keyboard$init, onEffects: _elm_lang$keyboard$Keyboard$onEffects, onSelfMsg: _elm_lang$keyboard$Keyboard$onSelfMsg, tag: 'sub', subMap: _elm_lang$keyboard$Keyboard$subMap};
+var _user$project$Model$allTilesMatrix = {
+	ctor: '_Tuple2',
+	_0: {
+		matrix: A4(
+			_eeue56$elm_flat_matrix$Matrix$set,
+			2,
+			2,
+			_elm_lang$core$Maybe$Just(2048),
+			A4(
+				_eeue56$elm_flat_matrix$Matrix$set,
+				2,
+				1,
+				_elm_lang$core$Maybe$Just(1024),
+				A4(
+					_eeue56$elm_flat_matrix$Matrix$set,
+					2,
+					0,
+					_elm_lang$core$Maybe$Just(512),
+					A4(
+						_eeue56$elm_flat_matrix$Matrix$set,
+						1,
+						3,
+						_elm_lang$core$Maybe$Just(256),
+						A4(
+							_eeue56$elm_flat_matrix$Matrix$set,
+							1,
+							2,
+							_elm_lang$core$Maybe$Just(128),
+							A4(
+								_eeue56$elm_flat_matrix$Matrix$set,
+								1,
+								1,
+								_elm_lang$core$Maybe$Just(64),
+								A4(
+									_eeue56$elm_flat_matrix$Matrix$set,
+									1,
+									0,
+									_elm_lang$core$Maybe$Just(32),
+									A4(
+										_eeue56$elm_flat_matrix$Matrix$set,
+										0,
+										3,
+										_elm_lang$core$Maybe$Just(16),
+										A4(
+											_eeue56$elm_flat_matrix$Matrix$set,
+											0,
+											2,
+											_elm_lang$core$Maybe$Just(8),
+											A4(
+												_eeue56$elm_flat_matrix$Matrix$set,
+												0,
+												1,
+												_elm_lang$core$Maybe$Just(4),
+												A4(
+													_eeue56$elm_flat_matrix$Matrix$set,
+													0,
+													0,
+													_elm_lang$core$Maybe$Just(2),
+													A3(_eeue56$elm_flat_matrix$Matrix$repeat, 4, 4, _elm_lang$core$Maybe$Nothing))))))))))))
+	},
+	_1: _elm_lang$core$Platform_Cmd$none
+};
 var _user$project$Model$init = {
 	ctor: '_Tuple2',
 	_0: {
@@ -9274,39 +9336,28 @@ var _user$project$Update$convertFromMaybes = function (list) {
 			list));
 };
 var _user$project$Update$mergeTiles = function (listToMerge) {
-	var firstTail = A2(
-		_elm_lang$core$Maybe$withDefault,
-		_elm_lang$core$Native_List.fromArray(
-			[]),
-		_elm_lang$core$List$tail(listToMerge));
-	var secondItem = A2(
-		_elm_lang$core$Maybe$withDefault,
-		0,
-		_elm_lang$core$List$head(firstTail));
-	var restOfItems = A2(
-		_elm_lang$core$Maybe$withDefault,
-		_elm_lang$core$Native_List.fromArray(
-			[]),
-		_elm_lang$core$List$tail(firstTail));
-	var firstItem = A2(
-		_elm_lang$core$Maybe$withDefault,
-		0,
-		_elm_lang$core$List$head(listToMerge));
-	return _elm_lang$core$Native_Utils.eq(firstItem, 0) ? _elm_lang$core$Native_List.fromArray(
-		[]) : (((!_elm_lang$core$Native_Utils.eq(firstItem, 0)) && _elm_lang$core$Native_Utils.eq(firstItem, secondItem)) ? A2(
-		_elm_lang$core$List$append,
-		_elm_lang$core$Native_List.fromArray(
-			[firstItem * 2]),
-		_user$project$Update$mergeTiles(restOfItems)) : A2(
-		_elm_lang$core$List_ops['::'],
-		firstItem,
-		_user$project$Update$mergeTiles(
-			A2(
-				_elm_lang$core$List$filter,
-				function (i) {
-					return !_elm_lang$core$Native_Utils.eq(i, 0);
-				},
-				firstTail))));
+	var filteredList = A2(
+		_elm_lang$core$List$filter,
+		function (i) {
+			return !_elm_lang$core$Native_Utils.eq(i, 0);
+		},
+		listToMerge);
+	var _p5 = filteredList;
+	if ((_p5.ctor === '::') && (_p5._1.ctor === '::')) {
+		var _p8 = _p5._1._0;
+		var _p7 = _p5._1._1;
+		var _p6 = _p5._0;
+		return _elm_lang$core$Native_Utils.eq(_p6, _p8) ? A2(
+			_elm_lang$core$List_ops['::'],
+			_p6 * 2,
+			_user$project$Update$mergeTiles(_p7)) : A2(
+			_elm_lang$core$List_ops['::'],
+			_p6,
+			_user$project$Update$mergeTiles(
+				A2(_elm_lang$core$List_ops['::'], _p8, _p7)));
+	} else {
+		return listToMerge;
+	}
 };
 var _user$project$Update$transpose = function (matrix) {
 	return A2(
@@ -9410,85 +9461,56 @@ var _user$project$Update$NewTile = function (a) {
 	return {ctor: 'NewTile', _0: a};
 };
 var _user$project$Update$SpawnTile = {ctor: 'SpawnTile'};
+var _user$project$Update$testAndMove = F2(
+	function (model, moveFunc) {
+		var newMatrix = moveFunc(model.matrix);
+		return (!_elm_lang$core$Native_Utils.eq(newMatrix, model.matrix)) ? A2(
+			_user$project$Update$update,
+			_user$project$Update$SpawnTile,
+			_elm_lang$core$Native_Utils.update(
+				model,
+				{matrix: newMatrix})) : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+	});
 var _user$project$Update$update = F2(
 	function (msg, model) {
-		update:
-		while (true) {
-			var _p5 = msg;
-			switch (_p5.ctor) {
-				case 'KeyMsg':
-					var _p6 = _p5._0;
-					switch (_p6) {
-						case 37:
-							var newModel = _elm_lang$core$Native_Utils.update(
-								model,
-								{
-									matrix: _user$project$Update$moveLeft(model.matrix)
-								});
-							var _v5 = _user$project$Update$SpawnTile,
-								_v6 = newModel;
-							msg = _v5;
-							model = _v6;
-							continue update;
-						case 38:
-							var newModel = _elm_lang$core$Native_Utils.update(
-								model,
-								{
-									matrix: _user$project$Update$moveUp(model.matrix)
-								});
-							var _v7 = _user$project$Update$SpawnTile,
-								_v8 = newModel;
-							msg = _v7;
-							model = _v8;
-							continue update;
-						case 39:
-							var newModel = _elm_lang$core$Native_Utils.update(
-								model,
-								{
-									matrix: _user$project$Update$moveRight(model.matrix)
-								});
-							var _v9 = _user$project$Update$SpawnTile,
-								_v10 = newModel;
-							msg = _v9;
-							model = _v10;
-							continue update;
-						case 40:
-							var newModel = _elm_lang$core$Native_Utils.update(
-								model,
-								{
-									matrix: _user$project$Update$moveDown(model.matrix)
-								});
-							var _v11 = _user$project$Update$SpawnTile,
-								_v12 = newModel;
-							msg = _v11;
-							model = _v12;
-							continue update;
-						default:
-							return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-					}
-				case 'SpawnTile':
-					var coordList = _user$project$Update$getCoordinatesOfEmptySpace(model.matrix);
-					var coordsCount = _elm_lang$core$List$length(coordList);
-					return {
-						ctor: '_Tuple2',
-						_0: model,
-						_1: A2(
-							_elm_lang$core$Random$generate,
-							_user$project$Update$NewTile,
-							A2(_elm_lang$core$Random$int, 1, coordsCount))
-					};
-				default:
-					var coordList = _user$project$Update$getCoordinatesOfEmptySpace(model.matrix);
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{
-								matrix: A3(_user$project$Update$spawnTile, coordList, _p5._0, model.matrix)
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-			}
+		var _p9 = msg;
+		switch (_p9.ctor) {
+			case 'KeyMsg':
+				var _p10 = _p9._0;
+				switch (_p10) {
+					case 37:
+						return A2(_user$project$Update$testAndMove, model, _user$project$Update$moveLeft);
+					case 38:
+						return A2(_user$project$Update$testAndMove, model, _user$project$Update$moveUp);
+					case 39:
+						return A2(_user$project$Update$testAndMove, model, _user$project$Update$moveRight);
+					case 40:
+						return A2(_user$project$Update$testAndMove, model, _user$project$Update$moveDown);
+					default:
+						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
+			case 'SpawnTile':
+				var coordsCount = _elm_lang$core$List$length(
+					_user$project$Update$getCoordinatesOfEmptySpace(model.matrix));
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: A2(
+						_elm_lang$core$Random$generate,
+						_user$project$Update$NewTile,
+						A2(_elm_lang$core$Random$int, 1, coordsCount))
+				};
+			default:
+				var coordList = _user$project$Update$getCoordinatesOfEmptySpace(model.matrix);
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							matrix: A3(_user$project$Update$spawnTile, coordList, _p9._0, model.matrix)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 		}
 	});
 var _user$project$Update$KeyMsg = function (a) {
@@ -9519,6 +9541,18 @@ var _user$project$View$matrixToDivs = function (matrix) {
 			makeRow,
 			_elm_lang$core$Native_List.range(0, height)));
 };
+var _user$project$View$baseTileStyle = _elm_lang$core$Native_List.fromArray(
+	[
+		{ctor: '_Tuple2', _0: 'width', _1: '100px'},
+		{ctor: '_Tuple2', _0: 'height', _1: '100px'},
+		{ctor: '_Tuple2', _0: 'border-radius', _1: '10px'},
+		{ctor: '_Tuple2', _0: 'margin', _1: '5px'},
+		{ctor: '_Tuple2', _0: 'display', _1: 'inline-block'},
+		{ctor: '_Tuple2', _0: 'line-height', _1: '100px'},
+		{ctor: '_Tuple2', _0: 'font-size', _1: '60px'},
+		{ctor: '_Tuple2', _0: 'font-weight', _1: 'bold'},
+		{ctor: '_Tuple2', _0: 'text-align', _1: 'center'}
+	]);
 var _user$project$View$drawTile = F3(
 	function (x, y, value) {
 		var _p0 = value;
@@ -9528,38 +9562,31 @@ var _user$project$View$drawTile = F3(
 				_elm_lang$core$Native_List.fromArray(
 					[
 						_elm_lang$html$Html_Attributes$style(
-						_elm_lang$core$Native_List.fromArray(
-							[
-								{ctor: '_Tuple2', _0: 'width', _1: '40px'},
-								{ctor: '_Tuple2', _0: 'height', _1: '40px'},
-								{ctor: '_Tuple2', _0: 'border-radius', _1: '4px'},
-								{ctor: '_Tuple2', _0: 'margin', _1: '2px'},
-								{ctor: '_Tuple2', _0: 'display', _1: 'inline-block'},
-								{ctor: '_Tuple2', _0: 'line-height', _1: '40px'},
-								{ctor: '_Tuple2', _0: 'font-size', _1: '12px'},
-								{ctor: '_Tuple2', _0: 'background-color', _1: 'lightgrey'}
-							]))
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_user$project$View$baseTileStyle,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									{ctor: '_Tuple2', _0: 'background-color', _1: 'lightgray'}
+								])))
 					]),
 				_elm_lang$core$Native_List.fromArray(
-					[]));
+					[
+						_elm_lang$html$Html$text(' ')
+					]));
 		} else {
 			return A2(
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
 					[
 						_elm_lang$html$Html_Attributes$style(
-						_elm_lang$core$Native_List.fromArray(
-							[
-								{ctor: '_Tuple2', _0: 'width', _1: '40px'},
-								{ctor: '_Tuple2', _0: 'height', _1: '40px'},
-								{ctor: '_Tuple2', _0: 'border-radius', _1: '4px'},
-								{ctor: '_Tuple2', _0: 'margin', _1: '2px'},
-								{ctor: '_Tuple2', _0: 'display', _1: 'inline-block'},
-								{ctor: '_Tuple2', _0: 'line-height', _1: '40px'},
-								{ctor: '_Tuple2', _0: 'font-size', _1: '12px'},
-								{ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
-								{ctor: '_Tuple2', _0: 'background-color', _1: 'green'}
-							]))
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_user$project$View$baseTileStyle,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									{ctor: '_Tuple2', _0: 'background-color', _1: 'yellow'}
+								])))
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
@@ -9576,10 +9603,42 @@ var _user$project$View$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
-			[]),
+			[
+				_elm_lang$html$Html_Attributes$style(
+				_elm_lang$core$Native_List.fromArray(
+					[
+						{ctor: '_Tuple2', _0: 'background', _1: '#faf8ef'},
+						{ctor: '_Tuple2', _0: 'color', _1: '#776e65'},
+						{ctor: '_Tuple2', _0: 'margin', _1: '0 auto'}
+					]))
+			]),
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_user$project$View$prettyPrint(model.matrix)
+				A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$style(
+						_elm_lang$core$Native_List.fromArray(
+							[
+								{ctor: '_Tuple2', _0: 'width', _1: '500px'},
+								{ctor: '_Tuple2', _0: 'height', _1: '100%'},
+								{ctor: '_Tuple2', _0: 'margin', _1: '0 auto'},
+								{ctor: '_Tuple2', _0: 'font-family', _1: '\"Clear Sans\", \"Helvetica Neue\", Arial, sans-serif;'},
+								{ctor: '_Tuple2', _0: 'font-size', _1: '18px'}
+							]))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_user$project$View$prettyPrint(model.matrix)
+							]))
+					]))
 			]));
 };
 var _user$project$Main$subscriptions = function (model) {
