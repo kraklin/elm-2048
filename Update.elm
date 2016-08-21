@@ -12,53 +12,51 @@ type Msg
     | SpawnTile
     | NewTile Int
 
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         KeyMsg code ->
             case code of
-                37 ->
-                    let 
-                        newModel = { model | matrix = moveLeft model.matrix}
-                    in
-                       update SpawnTile newModel
+                37 -> testAndMove model moveLeft
 
-                38 ->
-                    let 
-                        newModel = { model | matrix = moveUp model.matrix}
-                    in
-                       update SpawnTile newModel
+                38 -> testAndMove model moveUp
 
-                39 ->
-                    let 
-                        newModel = { model | matrix = moveRight model.matrix}
-                    in
-                       update SpawnTile newModel
+                39 -> testAndMove model moveRight
 
-                40 ->
-                    let 
-                        newModel = { model | matrix = moveDown model.matrix}
-                    in
-                       update SpawnTile newModel
+                40 -> testAndMove model moveDown
 
                 _ ->
                     ( model, Cmd.none )
+
         SpawnTile ->
             let
-                coordList = 
-                    getCoordinatesOfEmptySpace model.matrix
-                coordsCount =
-                    List.length coordList
+                coordsCount = model.matrix
+                    |> getCoordinatesOfEmptySpace
+                    |> List.length
             in
-            (model, Random.generate NewTile (Random.int 1 coordsCount))
+                ( model, Random.generate NewTile (Random.int 1 coordsCount) )
+
         NewTile position ->
             let
-                coordList = 
+                coordList =
                     getCoordinatesOfEmptySpace model.matrix
             in
-                ( {model | matrix = spawnTile coordList position model.matrix}
-                , Cmd.none)
+                ( { model | matrix = spawnTile coordList position model.matrix }
+                , Cmd.none
+                )
 
+
+testAndMove : Model -> (Matrix (Maybe Int) -> Matrix (Maybe Int)) -> ( Model, Cmd Msg )
+testAndMove model moveFunc =
+    let
+        newMatrix =
+            moveFunc model.matrix
+    in
+        if (newMatrix /= model.matrix) then
+            update SpawnTile { model | matrix = newMatrix }
+        else
+            ( model, Cmd.none )
 
 
 getRowFromMatrix : Int -> Matrix a -> List a
@@ -212,14 +210,17 @@ getCoordinatesOfEmptySpace matrix =
 
 spawnTile : List ( Int, Int ) -> Int -> Matrix (Maybe Int) -> Matrix (Maybe Int)
 spawnTile listOfPlaces position matrix =
-    let selectedCoords =
-        listOfPlaces
-        |> List.take position
-        |> List.reverse
-        |> List.head
+    let
+        selectedCoords =
+            listOfPlaces
+                |> List.take position
+                |> List.reverse
+                |> List.head
     in
         case selectedCoords of
-        Nothing -> matrix
-        Just (x,y) ->
-            matrix
-            |> Matrix.set x y (Just 2)
+            Nothing ->
+                matrix
+
+            Just ( x, y ) ->
+                matrix
+                    |> Matrix.set x y (Just 2)
