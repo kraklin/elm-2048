@@ -47,6 +47,40 @@ mergeTilesSuite =
         ]
 
 
+moveSuite : Test
+moveSuite =
+    suite "Move test"
+        [ test "Move left"
+            (let
+                initMatrix =
+                    (Matrix.repeat 4 4 (Nothing))
+                        |> Matrix.set 1 1 (Just 2)
+                        |> Matrix.set 2 1 (Just 2)
+
+                finalMatrix =
+                    (Matrix.repeat 4 4 (Nothing))
+                        |> Matrix.set 0 1 (Just 4)
+             in
+                Update.moveLeft initMatrix
+                    |> assertEqual finalMatrix
+            )
+        , test "Move down"
+            (let
+                initMatrix =
+                    (Matrix.repeat 4 4 (Nothing))
+                        |> Matrix.set 1 1 (Just 2)
+                        |> Matrix.set 1 2 (Just 2)
+
+                finalMatrix =
+                    (Matrix.repeat 4 4 (Nothing))
+                        |> Matrix.set 1 3 (Just 4)
+             in
+                Update.moveDown initMatrix
+                    |> assertEqual finalMatrix
+            )
+        ]
+
+
 spawnTileSuite : Test
 spawnTileSuite =
     suite "spawn tile"
@@ -64,9 +98,12 @@ spawnTileSuite =
                 initMatrix =
                     (Matrix.repeat 4 4 (Just 2))
                         |> Matrix.set 2 2 Nothing
+
                 listOfCoords =
                     Update.getCoordinatesOfEmptySpace initMatrix
-                randPosition = 1
+
+                randPosition =
+                    1
              in
                 Update.spawnTile listOfCoords randPosition initMatrix
                     |> assertEqual (Matrix.repeat 4 4 (Just 2))
@@ -79,6 +116,7 @@ all =
     suite "Game 2048"
         [ mergeTilesSuite
         , spawnTileSuite
+        , moveSuite
         ]
 
 
