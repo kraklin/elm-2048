@@ -6,6 +6,7 @@ import Html exposing (Html, div, text)
 import Html.Attributes exposing (style)
 import Matrix exposing (..)
 import Array exposing (..)
+import Dict exposing (..)
 
 
 -- View
@@ -23,6 +24,23 @@ baseTileStyle =
     , ( "font-weight", "bold" )
     , ( "text-align", "center" )
     ]
+
+
+valueColorMap : Dict Int ( String, String )
+valueColorMap =
+    Dict.fromList
+        [ ( 2, ( "#ffb380", "white" ) )
+        , ( 4, ( "#ff7f2a", "white" ) )
+        , ( 8, ( "#ff3e2a", "white" ) )
+        , ( 16, ( "#ffad2a", "black" ) )
+        , ( 32, ( "#ffc42a", "black" ) )
+        , ( 64, ( "#ff834f", "black" ) )
+        , ( 128, ( "#ff834f", "black" ) )
+        , ( 256, ( "#ff834f", "black" ) )
+        , ( 512, ( "#ff834f", "black" ) )
+        , ( 1024, ( "#ff834f", "black" ) )
+        , ( 2048, ( "#ff834f", "black" ) )
+        ]
 
 
 prettyPrint : Matrix (Maybe Int) -> Html Msg
@@ -45,10 +63,15 @@ drawTile x y value =
                 [ text " " ]
 
         Just value ->
+            let (bgColor, fgColor) = 
+                Dict.get value valueColorMap 
+                |> Maybe.withDefault ( "#ffb380", "white" ) 
+            in
             div
                 [ style
                     (baseTileStyle
-                        ++ [ ( "background-color", "yellow" ) ]
+                        ++ [ ( "background-color", bgColor )
+                        , ("color", fgColor) ]
                     )
                 ]
                 [ text (toString value) ]
