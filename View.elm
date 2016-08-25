@@ -2,7 +2,7 @@ module View exposing (view)
 
 import Update exposing (Msg)
 import Model exposing (Model)
-import Html exposing (Html, div, text)
+import Html exposing (Html, div, text, h1)
 import Html.Attributes exposing (style)
 import Matrix exposing (..)
 import Array exposing (..)
@@ -16,7 +16,6 @@ baseTileStyle : List ( String, String )
 baseTileStyle =
     [ ( "width", "100px" )
     , ( "height", "100px" )
-    , ( "border-radius", "10px" )
     , ( "margin", "5px" )
     , ( "display", "inline-block" )
     , ( "line-height", "100px" )
@@ -29,17 +28,17 @@ baseTileStyle =
 valueColorMap : Dict Int ( String, String )
 valueColorMap =
     Dict.fromList
-        [ ( 2, ( "#ffb380", "white" ) )
-        , ( 4, ( "#ff7f2a", "white" ) )
-        , ( 8, ( "#ff3e2a", "white" ) )
-        , ( 16, ( "#ffad2a", "black" ) )
-        , ( 32, ( "#ffc42a", "black" ) )
-        , ( 64, ( "#ff834f", "black" ) )
-        , ( 128, ( "#ff834f", "black" ) )
-        , ( 256, ( "#ff834f", "black" ) )
-        , ( 512, ( "#ff834f", "black" ) )
-        , ( 1024, ( "#ff834f", "black" ) )
-        , ( 2048, ( "#ff834f", "black" ) )
+        [ ( 2, ( "#eee4da", "black" ) )
+        , ( 4, ( "#ede0c8", "black" ) )
+        , ( 8, ( "#f2b179", "#f9f6f2" ) )
+        , ( 16, ( "#f59563", "#f9f6f2" ) )
+        , ( 32, ( "#f67c5f", "#f9f6f2" ) )
+        , ( 64, ( "#f65e3b", "#f9f6f2" ) )
+        , ( 128, ( "#edcf72", "#f9f6f2" ) )
+        , ( 256, ( "#edcc61", "#f9f6f2" ) )
+        , ( 512, ( "#edc850", "#f9f6f2" ) )
+        , ( 1024, ( "#edc53f", "#f9f6f2" ) )
+        , ( 2048, ( "#edc53f", "#f9f6f2" ) )
         ]
 
 
@@ -57,24 +56,26 @@ drawTile x y value =
             div
                 [ style
                     (baseTileStyle
-                        ++ [ ( "background-color", "lightgray" ) ]
+                        ++ [ ( "background", "rgba(238, 228, 218, 0.35)" ) ]
                     )
                 ]
                 [ text " " ]
 
         Just value ->
-            let (bgColor, fgColor) = 
-                Dict.get value valueColorMap 
-                |> Maybe.withDefault ( "#ffb380", "white" ) 
+            let
+                ( bgColor, fgColor ) =
+                    Dict.get value valueColorMap
+                        |> Maybe.withDefault ( "#ffb380", "white" )
             in
-            div
-                [ style
-                    (baseTileStyle
-                        ++ [ ( "background-color", bgColor )
-                        , ("color", fgColor) ]
-                    )
-                ]
-                [ text (toString value) ]
+                div
+                    [ style
+                        (baseTileStyle
+                            ++ [ ( "background-color", bgColor )
+                               , ( "color", fgColor )
+                               ]
+                        )
+                    ]
+                    [ text (toString value) ]
 
 
 matrixToDivs : Matrix (Html.Html Msg) -> Html.Html Msg
@@ -103,16 +104,22 @@ view model =
             , ( "margin", "0 auto" )
             ]
         ]
-        [ div
+        [ h1 [ style [ ( "text-align", "center" ) ] ] [ text "ELM 2048" ]
+        , div
             [ style
-                [ ( "width", "500px" )
+                [ ( "width", "450px" )
                 , ( "height", "100%" )
                 , ( "margin", "0 auto" )
                 , ( "font-family", "\"Clear Sans\", \"Helvetica Neue\", Arial, sans-serif;" )
                 , ( "font-size", "18px" )
                 ]
             ]
-            [ div []
+            [ div
+                [ style
+                    [ ( "background-color", "#bbada0" )
+                    , ( "padding", "5px" )
+                    ]
+                ]
                 [ prettyPrint model.matrix
                 ]
             ]
