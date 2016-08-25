@@ -9541,6 +9541,65 @@ var _user$project$View$matrixToDivs = function (matrix) {
 			makeRow,
 			_elm_lang$core$Native_List.range(0, height)));
 };
+var _user$project$View$valueColorMap = _elm_lang$core$Dict$fromList(
+	_elm_lang$core$Native_List.fromArray(
+		[
+			{
+			ctor: '_Tuple2',
+			_0: 2,
+			_1: {ctor: '_Tuple2', _0: '#ffb380', _1: 'white'}
+		},
+			{
+			ctor: '_Tuple2',
+			_0: 4,
+			_1: {ctor: '_Tuple2', _0: '#ff7f2a', _1: 'white'}
+		},
+			{
+			ctor: '_Tuple2',
+			_0: 8,
+			_1: {ctor: '_Tuple2', _0: '#ff3e2a', _1: 'white'}
+		},
+			{
+			ctor: '_Tuple2',
+			_0: 16,
+			_1: {ctor: '_Tuple2', _0: '#ffad2a', _1: 'black'}
+		},
+			{
+			ctor: '_Tuple2',
+			_0: 32,
+			_1: {ctor: '_Tuple2', _0: '#ffc42a', _1: 'black'}
+		},
+			{
+			ctor: '_Tuple2',
+			_0: 64,
+			_1: {ctor: '_Tuple2', _0: '#ff834f', _1: 'black'}
+		},
+			{
+			ctor: '_Tuple2',
+			_0: 128,
+			_1: {ctor: '_Tuple2', _0: '#ff834f', _1: 'black'}
+		},
+			{
+			ctor: '_Tuple2',
+			_0: 256,
+			_1: {ctor: '_Tuple2', _0: '#ff834f', _1: 'black'}
+		},
+			{
+			ctor: '_Tuple2',
+			_0: 512,
+			_1: {ctor: '_Tuple2', _0: '#ff834f', _1: 'black'}
+		},
+			{
+			ctor: '_Tuple2',
+			_0: 1024,
+			_1: {ctor: '_Tuple2', _0: '#ff834f', _1: 'black'}
+		},
+			{
+			ctor: '_Tuple2',
+			_0: 2048,
+			_1: {ctor: '_Tuple2', _0: '#ff834f', _1: 'black'}
+		}
+		]));
 var _user$project$View$baseTileStyle = _elm_lang$core$Native_List.fromArray(
 	[
 		{ctor: '_Tuple2', _0: 'width', _1: '100px'},
@@ -9575,6 +9634,13 @@ var _user$project$View$drawTile = F3(
 						_elm_lang$html$Html$text(' ')
 					]));
 		} else {
+			var _p2 = _p0._0;
+			var _p1 = A2(
+				_elm_lang$core$Maybe$withDefault,
+				{ctor: '_Tuple2', _0: '#ffb380', _1: 'white'},
+				A2(_elm_lang$core$Dict$get, _p2, _user$project$View$valueColorMap));
+			var bgColor = _p1._0;
+			var fgColor = _p1._1;
 			return A2(
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
@@ -9585,13 +9651,14 @@ var _user$project$View$drawTile = F3(
 							_user$project$View$baseTileStyle,
 							_elm_lang$core$Native_List.fromArray(
 								[
-									{ctor: '_Tuple2', _0: 'background-color', _1: 'yellow'}
+									{ctor: '_Tuple2', _0: 'background-color', _1: bgColor},
+									{ctor: '_Tuple2', _0: 'color', _1: fgColor}
 								])))
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
 						_elm_lang$html$Html$text(
-						_elm_lang$core$Basics$toString(_p0._0))
+						_elm_lang$core$Basics$toString(_p2))
 					]));
 		}
 	});
