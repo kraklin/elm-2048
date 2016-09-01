@@ -179,7 +179,7 @@ mergeTiles listToMerge =
 convertFromMaybes : List (Maybe Int) -> List Int
 convertFromMaybes list =
     list
-        |> List.map (\n -> Maybe.withDefault 0 n)
+        |> List.map (Maybe.withDefault 0)
         |> List.filter (\n -> n /= 0)
 
 
@@ -187,7 +187,7 @@ castToFilledMaybeList : List Int -> List (Maybe Int)
 castToFilledMaybeList list =
     let
         listOfMaybes =
-            List.map (\n -> Just n) list
+            List.map Just list
 
         toFill =
             4 - List.length list
