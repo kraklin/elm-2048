@@ -81,6 +81,36 @@ moveSuite =
         ]
 
 
+rotationTests : Test
+rotationTests =
+    suite "rotation"
+        [ test "rotate to left"
+            (let
+                initialMatrix =
+                    (Matrix.fromList
+                        [ [1..3]
+                        , [4..6]
+                        , [7..9]
+                        ]
+                    )
+                    |> Maybe.withDefault Matrix.empty
+
+                finalMatrix =
+                    (Matrix.fromList
+                        [ [ 7, 4, 1 ]
+                        , [ 8, 5, 2 ]
+                        , [ 9, 6, 3 ]
+                        ]
+                    )
+                    |> Maybe.withDefault Matrix.empty
+             in
+                initialMatrix
+                    |> Update.rotateMatrixRight
+                    |> assertEqual finalMatrix
+            )
+        ]
+
+
 spawnTileSuite : Test
 spawnTileSuite =
     suite "spawn tile"
@@ -114,9 +144,10 @@ spawnTileSuite =
 all : Test
 all =
     suite "Game 2048"
-        [ mergeTilesSuite
-        , spawnTileSuite
-        , moveSuite
+        [ --mergeTilesSuite
+        --, spawnTileSuite
+        --, moveSuite
+         rotationTests
         ]
 
 

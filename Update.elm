@@ -5,6 +5,7 @@ import Matrix exposing (..)
 import Array
 import Keyboard
 import Random
+import Debug
 
 
 type Msg
@@ -223,3 +224,31 @@ spawnTile listOfPlaces position matrix =
             Just ( x, y ) ->
                 matrix
                     |> Matrix.set x y (Just 2)
+
+transposeM : Matrix Int -> Matrix Int
+transposeM matrix =
+    matrix
+        |> Matrix.indexedMap
+            (\x y v ->
+                Maybe.withDefault 0 (Matrix.get y x matrix)
+            )
+        |> reverseRows
+
+reverseRows : Matrix Int -> Matrix Int
+reverseRows matrix =
+    let 
+        reverseRow n = 
+            matrix 
+            |> getRowFromMatrix n 
+            |> List.reverse
+            |> Debug.log "reversed"
+    in
+    [0..((Matrix.height matrix)-1)] 
+        |> List.map reverseRow
+        |> Matrix.fromList
+        |> Maybe.withDefault Matrix.empty
+
+
+rotateMatrixRight : Matrix Int -> Matrix Int
+rotateMatrixRight matrix = 
+    transposeM matrix
