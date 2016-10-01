@@ -16,6 +16,7 @@ main =
         , subscriptions = subscriptions
         }
 
+
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch [ Keyboard.ups Update.KeyMsg ]
