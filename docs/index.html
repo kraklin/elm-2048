@@ -9199,68 +9199,62 @@ var _elm_lang$keyboard$Keyboard$subMap = F2(
 			});
 	});
 _elm_lang$core$Native_Platform.effectManagers['Keyboard'] = {pkg: 'elm-lang/keyboard', init: _elm_lang$keyboard$Keyboard$init, onEffects: _elm_lang$keyboard$Keyboard$onEffects, onSelfMsg: _elm_lang$keyboard$Keyboard$onSelfMsg, tag: 'sub', subMap: _elm_lang$keyboard$Keyboard$subMap};
-var _user$project$Model$allTilesMatrix = {
-	ctor: '_Tuple2',
-	_0: {
-		matrix: A4(
+var _user$project$Model$allTilesMatrix = A4(
+	_eeue56$elm_flat_matrix$Matrix$set,
+	2,
+	2,
+	_elm_lang$core$Maybe$Just(2048),
+	A4(
+		_eeue56$elm_flat_matrix$Matrix$set,
+		2,
+		1,
+		_elm_lang$core$Maybe$Just(1024),
+		A4(
 			_eeue56$elm_flat_matrix$Matrix$set,
 			2,
-			2,
-			_elm_lang$core$Maybe$Just(2048),
+			0,
+			_elm_lang$core$Maybe$Just(512),
 			A4(
 				_eeue56$elm_flat_matrix$Matrix$set,
-				2,
 				1,
-				_elm_lang$core$Maybe$Just(1024),
+				3,
+				_elm_lang$core$Maybe$Just(256),
 				A4(
 					_eeue56$elm_flat_matrix$Matrix$set,
+					1,
 					2,
-					0,
-					_elm_lang$core$Maybe$Just(512),
+					_elm_lang$core$Maybe$Just(128),
 					A4(
 						_eeue56$elm_flat_matrix$Matrix$set,
 						1,
-						3,
-						_elm_lang$core$Maybe$Just(256),
+						1,
+						_elm_lang$core$Maybe$Just(64),
 						A4(
 							_eeue56$elm_flat_matrix$Matrix$set,
 							1,
-							2,
-							_elm_lang$core$Maybe$Just(128),
+							0,
+							_elm_lang$core$Maybe$Just(32),
 							A4(
 								_eeue56$elm_flat_matrix$Matrix$set,
-								1,
-								1,
-								_elm_lang$core$Maybe$Just(64),
+								0,
+								3,
+								_elm_lang$core$Maybe$Just(16),
 								A4(
 									_eeue56$elm_flat_matrix$Matrix$set,
-									1,
 									0,
-									_elm_lang$core$Maybe$Just(32),
+									2,
+									_elm_lang$core$Maybe$Just(8),
 									A4(
 										_eeue56$elm_flat_matrix$Matrix$set,
 										0,
-										3,
-										_elm_lang$core$Maybe$Just(16),
+										1,
+										_elm_lang$core$Maybe$Just(4),
 										A4(
 											_eeue56$elm_flat_matrix$Matrix$set,
 											0,
-											2,
-											_elm_lang$core$Maybe$Just(8),
-											A4(
-												_eeue56$elm_flat_matrix$Matrix$set,
-												0,
-												1,
-												_elm_lang$core$Maybe$Just(4),
-												A4(
-													_eeue56$elm_flat_matrix$Matrix$set,
-													0,
-													0,
-													_elm_lang$core$Maybe$Just(2),
-													A3(_eeue56$elm_flat_matrix$Matrix$repeat, 4, 4, _elm_lang$core$Maybe$Nothing))))))))))))
-	},
-	_1: _elm_lang$core$Platform_Cmd$none
-};
+											0,
+											_elm_lang$core$Maybe$Just(2),
+											A3(_eeue56$elm_flat_matrix$Matrix$repeat, 4, 4, _elm_lang$core$Maybe$Nothing))))))))))));
 var _user$project$Model$init = {
 	ctor: '_Tuple2',
 	_0: {
@@ -9311,29 +9305,14 @@ var _user$project$Update$getCoordinatesOfEmptySpace = function (matrix) {
 };
 var _user$project$Update$castToFilledMaybeList = function (list) {
 	var toFill = 4 - _elm_lang$core$List$length(list);
-	var listOfMaybes = A2(
-		_elm_lang$core$List$map,
-		function (n) {
-			return _elm_lang$core$Maybe$Just(n);
-		},
-		list);
+	var listOfMaybes = A2(_elm_lang$core$List$map, _elm_lang$core$Maybe$Just, list);
 	return _elm_lang$core$Native_Utils.eq(toFill, 0) ? listOfMaybes : A2(
 		_elm_lang$core$List$append,
 		listOfMaybes,
 		A2(_elm_lang$core$List$repeat, toFill, _elm_lang$core$Maybe$Nothing));
 };
 var _user$project$Update$convertFromMaybes = function (list) {
-	return A2(
-		_elm_lang$core$List$filter,
-		function (n) {
-			return !_elm_lang$core$Native_Utils.eq(n, 0);
-		},
-		A2(
-			_elm_lang$core$List$map,
-			function (n) {
-				return A2(_elm_lang$core$Maybe$withDefault, 0, n);
-			},
-			list));
+	return A2(_elm_lang$core$List$filterMap, _elm_lang$core$Basics$identity, list);
 };
 var _user$project$Update$mergeTiles = function (listToMerge) {
 	var filteredList = A2(
@@ -9456,6 +9435,41 @@ var _user$project$Update$moveRight = function (matrix) {
 				_elm_lang$core$List$map,
 				makeRow,
 				_elm_lang$core$Native_List.range(0, 3))));
+};
+var _user$project$Update$reverseRows = function (matrix) {
+	var reverseRow = function (n) {
+		return A2(
+			_elm_lang$core$Debug$log,
+			'reversed',
+			_elm_lang$core$List$reverse(
+				A2(_user$project$Update$getRowFromMatrix, n, matrix)));
+	};
+	return A2(
+		_elm_lang$core$Maybe$withDefault,
+		_eeue56$elm_flat_matrix$Matrix$empty,
+		_eeue56$elm_flat_matrix$Matrix$fromList(
+			A2(
+				_elm_lang$core$List$map,
+				reverseRow,
+				_elm_lang$core$Native_List.range(
+					0,
+					_eeue56$elm_flat_matrix$Matrix$height(matrix) - 1))));
+};
+var _user$project$Update$transposeM = function (matrix) {
+	return _user$project$Update$reverseRows(
+		A2(
+			_eeue56$elm_flat_matrix$Matrix$indexedMap,
+			F3(
+				function (x, y, v) {
+					return A2(
+						_elm_lang$core$Maybe$withDefault,
+						0,
+						A3(_eeue56$elm_flat_matrix$Matrix$get, y, x, matrix));
+				}),
+			matrix));
+};
+var _user$project$Update$rotateMatrixRight = function (matrix) {
+	return _user$project$Update$transposeM(matrix);
 };
 var _user$project$Update$NewTile = function (a) {
 	return {ctor: 'NewTile', _0: a};
