@@ -180,8 +180,7 @@ mergeTiles listToMerge =
 convertFromMaybes : List (Maybe Int) -> List Int
 convertFromMaybes list =
     list
-        |> List.map (Maybe.withDefault 0)
-        |> List.filter (\n -> n /= 0)
+        |> List.filterMap identity
 
 
 castToFilledMaybeList : List Int -> List (Maybe Int)
