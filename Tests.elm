@@ -144,10 +144,10 @@ spawnTileSuite =
 all : Test
 all =
     suite "Game 2048"
-        [ --mergeTilesSuite
-        --, spawnTileSuite
-        --, moveSuite
-         rotationTests
+        [ mergeTilesSuite
+        , spawnTileSuite
+        , moveSuite
+        , rotationTests
         ]
 
 
