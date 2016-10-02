@@ -78,34 +78,86 @@ moveSuite =
                 Update.moveDown initMatrix
                     |> assertEqual finalMatrix
             )
+        , test "Move right"
+            (let
+                initMatrix =
+                    (Matrix.repeat 4 4 (Nothing))
+                        |> Matrix.set 1 1 (Just 2)
+                        |> Matrix.set 2 1 (Just 2)
+
+                finalMatrix =
+                    (Matrix.repeat 4 4 (Nothing))
+                        |> Matrix.set 3 1 (Just 4)
+             in
+                Update.moveRight initMatrix
+                    |> assertEqual finalMatrix
+            )
+        , test "Move up"
+            (let
+                initMatrix =
+                    (Matrix.repeat 4 4 (Nothing))
+                        |> Matrix.set 1 1 (Just 2)
+                        |> Matrix.set 1 2 (Just 2)
+
+                finalMatrix =
+                    (Matrix.repeat 4 4 (Nothing))
+                        |> Matrix.set 1 0 (Just 4)
+             in
+                Update.moveUp initMatrix
+                    |> assertEqual finalMatrix
+            )
         ]
 
 
 rotationTests : Test
 rotationTests =
     suite "rotation"
-        [ test "rotate to left"
+        [ test "rotate to right"
             (let
                 initialMatrix =
                     (Matrix.fromList
-                        [ [1..3]
-                        , [4..6]
-                        , [7..9]
+                        [ [(Just 1),(Just 2),(Just 3)]
+                        , [(Just 4),(Just 5),(Just 6)]
+                        , [(Just 7),(Just 8),(Just 9)]
                         ]
                     )
                     |> Maybe.withDefault Matrix.empty
 
                 finalMatrix =
                     (Matrix.fromList
-                        [ [ 7, 4, 1 ]
-                        , [ 8, 5, 2 ]
-                        , [ 9, 6, 3 ]
+                        [ [(Just 7),(Just 4),(Just 1)]
+                        , [(Just 8),(Just 5),(Just 2)]
+                        , [(Just 9),(Just 6),(Just 3)]
                         ]
                     )
                     |> Maybe.withDefault Matrix.empty
              in
                 initialMatrix
                     |> Update.rotateMatrixRight
+                    |> assertEqual finalMatrix
+            )
+            ,test "rotate to left"
+            (let
+                initialMatrix =
+                    (Matrix.fromList
+                        [ [(Just 7),(Just 4),(Just 1)]
+                        , [(Just 8),(Just 5),(Just 2)]
+                        , [(Just 9),(Just 6),(Just 3)]
+                        ]
+                    )
+                    |> Maybe.withDefault Matrix.empty
+
+                finalMatrix =
+                    (Matrix.fromList
+                        [ [(Just 1),(Just 2),(Just 3)]
+                        , [(Just 4),(Just 5),(Just 6)]
+                        , [(Just 7),(Just 8),(Just 9)]
+                        ]
+                    )
+                    |> Maybe.withDefault Matrix.empty
+             in
+                initialMatrix
+                    |> Update.rotateMatrixLeft
                     |> assertEqual finalMatrix
             )
         ]

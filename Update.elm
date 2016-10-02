@@ -73,14 +73,6 @@ getRowFromMatrix rownum matrix =
         |> Array.toList
 
 
-getColumnFromMatrix : Int -> Matrix a -> List a
-getColumnFromMatrix colnum matrix =
-    matrix
-        |> Matrix.getColumn colnum
-        |> Maybe.withDefault Array.empty
-        |> Array.toList
-
-
 moveLeft : Matrix (Maybe Int) -> Matrix (Maybe Int)
 moveLeft matrix =
     let
@@ -99,65 +91,28 @@ moveLeft matrix =
 
 moveRight : Matrix (Maybe Int) -> Matrix (Maybe Int)
 moveRight matrix =
-    let
-        makeRow n =
-            matrix
-                |> getRowFromMatrix n
-                |> convertFromMaybes
-                |> List.reverse
-                |> mergeTiles
-                |> castToFilledMaybeList
-                |> List.reverse
-    in
-        [0..3]
-            |> List.map makeRow
-            |> Matrix.fromList
-            |> Maybe.withDefault Matrix.empty
+    matrix
+        |> rotateMatrixRight
+        |> rotateMatrixRight
+        |> moveLeft
+        |> rotateMatrixLeft
+        |> rotateMatrixLeft
 
 
 moveDown : Matrix (Maybe Int) -> Matrix (Maybe Int)
 moveDown matrix =
-    let
-        makeColumn n =
-            matrix
-                |> getColumnFromMatrix n
-                |> convertFromMaybes
-                |> List.reverse
-                |> mergeTiles
-                |> castToFilledMaybeList
-                |> List.reverse
-    in
-        [0..3]
-            |> List.map makeColumn
-            |> Matrix.fromList
-            |> Maybe.withDefault Matrix.empty
-            |> transpose
+    matrix
+        |> rotateMatrixRight
+        |> moveLeft
+        |> rotateMatrixLeft
 
 
 moveUp : Matrix (Maybe Int) -> Matrix (Maybe Int)
 moveUp matrix =
-    let
-        makeColumn n =
-            matrix
-                |> getColumnFromMatrix n
-                |> convertFromMaybes
-                |> mergeTiles
-                |> castToFilledMaybeList
-    in
-        [0..3]
-            |> List.map makeColumn
-            |> Matrix.fromList
-            |> Maybe.withDefault Matrix.empty
-            |> transpose
-
-
-transpose : Matrix (Maybe a) -> Matrix (Maybe a)
-transpose matrix =
     matrix
-        |> Matrix.indexedMap
-            (\x y v ->
-                Maybe.withDefault Nothing (Matrix.get y x matrix)
-            )
+        |> rotateMatrixLeft
+        |> moveLeft
+        |> rotateMatrixRight
 
 
 mergeTiles : List Int -> List Int
@@ -224,30 +179,37 @@ spawnTile listOfPlaces position matrix =
                 matrix
                     |> Matrix.set x y (Just 2)
 
-transposeM : Matrix Int -> Matrix Int
+
+transposeM : Matrix (Maybe Int) -> Matrix (Maybe Int)
 transposeM matrix =
     matrix
         |> Matrix.indexedMap
             (\x y v ->
-                Maybe.withDefault 0 (Matrix.get y x matrix)
+                Maybe.withDefault Nothing (Matrix.get y x matrix)
             )
         |> reverseRows
 
-reverseRows : Matrix Int -> Matrix Int
+
+reverseRows : Matrix (Maybe Int) -> Matrix (Maybe Int)
 reverseRows matrix =
-    let 
-        reverseRow n = 
-            matrix 
-            |> getRowFromMatrix n 
-            |> List.reverse
-            |> Debug.log "reversed"
+    let
+        reverseRow n =
+            matrix
+                |> getRowFromMatrix n
+                |> List.reverse
+                |> Debug.log "reversed"
     in
-    [0..((Matrix.height matrix)-1)] 
-        |> List.map reverseRow
-        |> Matrix.fromList
-        |> Maybe.withDefault Matrix.empty
+        [0..((Matrix.height matrix) - 1)]
+            |> List.map reverseRow
+            |> Matrix.fromList
+            |> Maybe.withDefault Matrix.empty
 
 
-rotateMatrixRight : Matrix Int -> Matrix Int
-rotateMatrixRight matrix = 
+rotateMatrixRight : Matrix (Maybe Int) -> Matrix (Maybe Int)
+rotateMatrixRight matrix =
     transposeM matrix
+
+
+rotateMatrixLeft : Matrix (Maybe Int) -> Matrix (Maybe Int)
+rotateMatrixLeft matrix =
+    matrix |> transposeM |> transposeM |> transposeM
