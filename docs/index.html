@@ -9030,6 +9030,106 @@ return {
 }();
 var _elm_lang$dom$Dom_LowLevel$onWindow = _elm_lang$dom$Native_Dom.onWindow;
 var _elm_lang$dom$Dom_LowLevel$onDocument = _elm_lang$dom$Native_Dom.onDocument;
+var _elm_lang$html$Html_Events$keyCode = A2(_elm_lang$core$Json_Decode_ops[':='], 'keyCode', _elm_lang$core$Json_Decode$int);
+var _elm_lang$html$Html_Events$targetChecked = A2(
+	_elm_lang$core$Json_Decode$at,
+	_elm_lang$core$Native_List.fromArray(
+		['target', 'checked']),
+	_elm_lang$core$Json_Decode$bool);
+var _elm_lang$html$Html_Events$targetValue = A2(
+	_elm_lang$core$Json_Decode$at,
+	_elm_lang$core$Native_List.fromArray(
+		['target', 'value']),
+	_elm_lang$core$Json_Decode$string);
+var _elm_lang$html$Html_Events$defaultOptions = _elm_lang$virtual_dom$VirtualDom$defaultOptions;
+var _elm_lang$html$Html_Events$onWithOptions = _elm_lang$virtual_dom$VirtualDom$onWithOptions;
+var _elm_lang$html$Html_Events$on = _elm_lang$virtual_dom$VirtualDom$on;
+var _elm_lang$html$Html_Events$onFocus = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'focus',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onBlur = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'blur',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onSubmitOptions = _elm_lang$core$Native_Utils.update(
+	_elm_lang$html$Html_Events$defaultOptions,
+	{preventDefault: true});
+var _elm_lang$html$Html_Events$onSubmit = function (msg) {
+	return A3(
+		_elm_lang$html$Html_Events$onWithOptions,
+		'submit',
+		_elm_lang$html$Html_Events$onSubmitOptions,
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onCheck = function (tagger) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'change',
+		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$targetChecked));
+};
+var _elm_lang$html$Html_Events$onInput = function (tagger) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'input',
+		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$targetValue));
+};
+var _elm_lang$html$Html_Events$onMouseOut = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseout',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseOver = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseover',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseLeave = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseleave',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseEnter = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseenter',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseUp = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mouseup',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onMouseDown = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'mousedown',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onDoubleClick = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'dblclick',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$onClick = function (msg) {
+	return A2(
+		_elm_lang$html$Html_Events$on,
+		'click',
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _elm_lang$html$Html_Events$Options = F2(
+	function (a, b) {
+		return {stopPropagation: a, preventDefault: b};
+	});
 var _elm_lang$keyboard$Keyboard$onSelfMsg = F3(
 	function (router, _p0, state) {
 		var _p1 = _p0;
@@ -9255,6 +9355,12 @@ var _user$project$Model$allTilesMatrix = A4(
 											0,
 											_elm_lang$core$Maybe$Just(2),
 											A3(_eeue56$elm_flat_matrix$Matrix$repeat, 4, 4, _elm_lang$core$Maybe$Nothing))))))))))));
+var _user$project$Model$Model = F2(
+	function (a, b) {
+		return {matrix: a, gameState: b};
+	});
+var _user$project$Model$Won = {ctor: 'Won'};
+var _user$project$Model$Playing = {ctor: 'Playing'};
 var _user$project$Model$init = {
 	ctor: '_Tuple2',
 	_0: {
@@ -9263,12 +9369,10 @@ var _user$project$Model$init = {
 			0,
 			0,
 			_elm_lang$core$Maybe$Just(2),
-			A3(_eeue56$elm_flat_matrix$Matrix$repeat, 4, 4, _elm_lang$core$Maybe$Nothing))
+			A3(_eeue56$elm_flat_matrix$Matrix$repeat, 4, 4, _elm_lang$core$Maybe$Nothing)),
+		gameState: _user$project$Model$Playing
 	},
 	_1: _elm_lang$core$Platform_Cmd$none
-};
-var _user$project$Model$Model = function (a) {
-	return {matrix: a};
 };
 var _user$project$Update$spawnTile = F3(
 	function (listOfPlaces, position, matrix) {
@@ -9304,12 +9408,13 @@ var _user$project$Update$getCoordinatesOfEmptySpace = function (matrix) {
 				_eeue56$elm_flat_matrix$Matrix$toIndexedArray(matrix))));
 };
 var _user$project$Update$castToFilledMaybeList = function (list) {
-	var toFill = 4 - _elm_lang$core$List$length(list);
-	var listOfMaybes = A2(_elm_lang$core$List$map, _elm_lang$core$Maybe$Just, list);
-	return _elm_lang$core$Native_Utils.eq(toFill, 0) ? listOfMaybes : A2(
-		_elm_lang$core$List$append,
-		listOfMaybes,
-		A2(_elm_lang$core$List$repeat, toFill, _elm_lang$core$Maybe$Nothing));
+	var listArray = _elm_lang$core$Array$fromList(list);
+	return A2(
+		_elm_lang$core$List$map,
+		function (p) {
+			return A2(_elm_lang$core$Array$get, p, listArray);
+		},
+		_elm_lang$core$Native_List.range(0, 3));
 };
 var _user$project$Update$convertFromMaybes = function (list) {
 	return A2(_elm_lang$core$List$filterMap, _elm_lang$core$Basics$identity, list);
@@ -9338,62 +9443,6 @@ var _user$project$Update$mergeTiles = function (listToMerge) {
 		return listToMerge;
 	}
 };
-var _user$project$Update$transpose = function (matrix) {
-	return A2(
-		_eeue56$elm_flat_matrix$Matrix$indexedMap,
-		F3(
-			function (x, y, v) {
-				return A2(
-					_elm_lang$core$Maybe$withDefault,
-					_elm_lang$core$Maybe$Nothing,
-					A3(_eeue56$elm_flat_matrix$Matrix$get, y, x, matrix));
-			}),
-		matrix);
-};
-var _user$project$Update$getColumnFromMatrix = F2(
-	function (colnum, matrix) {
-		return _elm_lang$core$Array$toList(
-			A2(
-				_elm_lang$core$Maybe$withDefault,
-				_elm_lang$core$Array$empty,
-				A2(_eeue56$elm_flat_matrix$Matrix$getColumn, colnum, matrix)));
-	});
-var _user$project$Update$moveDown = function (matrix) {
-	var makeColumn = function (n) {
-		return _elm_lang$core$List$reverse(
-			_user$project$Update$castToFilledMaybeList(
-				_user$project$Update$mergeTiles(
-					_elm_lang$core$List$reverse(
-						_user$project$Update$convertFromMaybes(
-							A2(_user$project$Update$getColumnFromMatrix, n, matrix))))));
-	};
-	return _user$project$Update$transpose(
-		A2(
-			_elm_lang$core$Maybe$withDefault,
-			_eeue56$elm_flat_matrix$Matrix$empty,
-			_eeue56$elm_flat_matrix$Matrix$fromList(
-				A2(
-					_elm_lang$core$List$map,
-					makeColumn,
-					_elm_lang$core$Native_List.range(0, 3)))));
-};
-var _user$project$Update$moveUp = function (matrix) {
-	var makeColumn = function (n) {
-		return _user$project$Update$castToFilledMaybeList(
-			_user$project$Update$mergeTiles(
-				_user$project$Update$convertFromMaybes(
-					A2(_user$project$Update$getColumnFromMatrix, n, matrix))));
-	};
-	return _user$project$Update$transpose(
-		A2(
-			_elm_lang$core$Maybe$withDefault,
-			_eeue56$elm_flat_matrix$Matrix$empty,
-			_eeue56$elm_flat_matrix$Matrix$fromList(
-				A2(
-					_elm_lang$core$List$map,
-					makeColumn,
-					_elm_lang$core$Native_List.range(0, 3)))));
-};
 var _user$project$Update$getRowFromMatrix = F2(
 	function (rownum, matrix) {
 		return _elm_lang$core$Array$toList(
@@ -9408,24 +9457,6 @@ var _user$project$Update$moveLeft = function (matrix) {
 			_user$project$Update$mergeTiles(
 				_user$project$Update$convertFromMaybes(
 					A2(_user$project$Update$getRowFromMatrix, n, matrix))));
-	};
-	return A2(
-		_elm_lang$core$Maybe$withDefault,
-		_eeue56$elm_flat_matrix$Matrix$empty,
-		_eeue56$elm_flat_matrix$Matrix$fromList(
-			A2(
-				_elm_lang$core$List$map,
-				makeRow,
-				_elm_lang$core$Native_List.range(0, 3))));
-};
-var _user$project$Update$moveRight = function (matrix) {
-	var makeRow = function (n) {
-		return _elm_lang$core$List$reverse(
-			_user$project$Update$castToFilledMaybeList(
-				_user$project$Update$mergeTiles(
-					_elm_lang$core$List$reverse(
-						_user$project$Update$convertFromMaybes(
-							A2(_user$project$Update$getRowFromMatrix, n, matrix))))));
 	};
 	return A2(
 		_elm_lang$core$Maybe$withDefault,
@@ -9463,7 +9494,7 @@ var _user$project$Update$transposeM = function (matrix) {
 				function (x, y, v) {
 					return A2(
 						_elm_lang$core$Maybe$withDefault,
-						0,
+						_elm_lang$core$Maybe$Nothing,
 						A3(_eeue56$elm_flat_matrix$Matrix$get, y, x, matrix));
 				}),
 			matrix));
@@ -9471,6 +9502,44 @@ var _user$project$Update$transposeM = function (matrix) {
 var _user$project$Update$rotateMatrixRight = function (matrix) {
 	return _user$project$Update$transposeM(matrix);
 };
+var _user$project$Update$rotateMatrixLeft = function (matrix) {
+	return _user$project$Update$transposeM(
+		_user$project$Update$transposeM(
+			_user$project$Update$transposeM(matrix)));
+};
+var _user$project$Update$moveRight = function (matrix) {
+	return _user$project$Update$rotateMatrixLeft(
+		_user$project$Update$rotateMatrixLeft(
+			_user$project$Update$moveLeft(
+				_user$project$Update$rotateMatrixRight(
+					_user$project$Update$rotateMatrixRight(matrix)))));
+};
+var _user$project$Update$moveDown = function (matrix) {
+	return _user$project$Update$rotateMatrixLeft(
+		_user$project$Update$moveLeft(
+			_user$project$Update$rotateMatrixRight(matrix)));
+};
+var _user$project$Update$moveUp = function (matrix) {
+	return _user$project$Update$rotateMatrixRight(
+		_user$project$Update$moveLeft(
+			_user$project$Update$rotateMatrixLeft(matrix)));
+};
+var _user$project$Update$checkWin = function (matrix) {
+	var filteredArray = A2(
+		_elm_lang$core$Array$filter,
+		function (_p9) {
+			var _p10 = _p9;
+			return _elm_lang$core$Native_Utils.eq(
+				_p10._1,
+				_elm_lang$core$Maybe$Just(2048));
+		},
+		_eeue56$elm_flat_matrix$Matrix$toIndexedArray(matrix));
+	return (_elm_lang$core$Native_Utils.cmp(
+		_elm_lang$core$Array$length(filteredArray),
+		1) > -1) ? true : false;
+};
+var _user$project$Update$WinGame = {ctor: 'WinGame'};
+var _user$project$Update$Reset = {ctor: 'Reset'};
 var _user$project$Update$NewTile = function (a) {
 	return {ctor: 'NewTile', _0: a};
 };
@@ -9478,20 +9547,30 @@ var _user$project$Update$SpawnTile = {ctor: 'SpawnTile'};
 var _user$project$Update$testAndMove = F2(
 	function (model, moveFunc) {
 		var newMatrix = moveFunc(model.matrix);
-		return (!_elm_lang$core$Native_Utils.eq(newMatrix, model.matrix)) ? A2(
-			_user$project$Update$update,
-			_user$project$Update$SpawnTile,
-			_elm_lang$core$Native_Utils.update(
-				model,
-				{matrix: newMatrix})) : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		var _p11 = model.gameState;
+		if (_p11.ctor === 'Playing') {
+			return _user$project$Update$checkWin(newMatrix) ? A2(
+				_user$project$Update$update,
+				_user$project$Update$WinGame,
+				_elm_lang$core$Native_Utils.update(
+					model,
+					{matrix: newMatrix})) : ((!_elm_lang$core$Native_Utils.eq(newMatrix, model.matrix)) ? A2(
+				_user$project$Update$update,
+				_user$project$Update$SpawnTile,
+				_elm_lang$core$Native_Utils.update(
+					model,
+					{matrix: newMatrix})) : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none});
+		} else {
+			return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		}
 	});
 var _user$project$Update$update = F2(
 	function (msg, model) {
-		var _p9 = msg;
-		switch (_p9.ctor) {
+		var _p12 = msg;
+		switch (_p12.ctor) {
 			case 'KeyMsg':
-				var _p10 = _p9._0;
-				switch (_p10) {
+				var _p13 = _p12._0;
+				switch (_p13) {
 					case 37:
 						return A2(_user$project$Update$testAndMove, model, _user$project$Update$moveLeft);
 					case 38:
@@ -9514,21 +9593,51 @@ var _user$project$Update$update = F2(
 						_user$project$Update$NewTile,
 						A2(_elm_lang$core$Random$int, 1, coordsCount))
 				};
-			default:
+			case 'NewTile':
 				var coordList = _user$project$Update$getCoordinatesOfEmptySpace(model.matrix);
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							matrix: A3(_user$project$Update$spawnTile, coordList, _p9._0, model.matrix)
+							matrix: A3(_user$project$Update$spawnTile, coordList, _p12._0, model.matrix)
 						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
+			case 'WinGame':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{gameState: _user$project$Model$Won}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				return _user$project$Model$init;
 		}
 	});
 var _user$project$Update$KeyMsg = function (a) {
 	return {ctor: 'KeyMsg', _0: a};
+};
+var _user$project$View$showGameWon = function (state) {
+	var _p0 = state;
+	if (_p0.ctor === 'Won') {
+		return A2(
+			_elm_lang$html$Html$h2,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text('You have Won')
+				]));
+	} else {
+		return A2(
+			_elm_lang$html$Html$div,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[]));
+	}
 };
 var _user$project$View$matrixToDivs = function (matrix) {
 	var height = _eeue56$elm_flat_matrix$Matrix$height(matrix);
@@ -9627,8 +9736,8 @@ var _user$project$View$baseTileStyle = _elm_lang$core$Native_List.fromArray(
 	]);
 var _user$project$View$drawTile = F3(
 	function (x, y, value) {
-		var _p0 = value;
-		if (_p0.ctor === 'Nothing') {
+		var _p1 = value;
+		if (_p1.ctor === 'Nothing') {
 			return A2(
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
@@ -9647,13 +9756,13 @@ var _user$project$View$drawTile = F3(
 						_elm_lang$html$Html$text(' ')
 					]));
 		} else {
-			var _p2 = _p0._0;
-			var _p1 = A2(
+			var _p3 = _p1._0;
+			var _p2 = A2(
 				_elm_lang$core$Maybe$withDefault,
 				{ctor: '_Tuple2', _0: '#ffb380', _1: 'white'},
-				A2(_elm_lang$core$Dict$get, _p2, _user$project$View$valueColorMap));
-			var bgColor = _p1._0;
-			var fgColor = _p1._1;
+				A2(_elm_lang$core$Dict$get, _p3, _user$project$View$valueColorMap));
+			var bgColor = _p2._0;
+			var fgColor = _p2._1;
 			return A2(
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
@@ -9671,7 +9780,7 @@ var _user$project$View$drawTile = F3(
 				_elm_lang$core$Native_List.fromArray(
 					[
 						_elm_lang$html$Html$text(
-						_elm_lang$core$Basics$toString(_p2))
+						_elm_lang$core$Basics$toString(_p3))
 					]));
 		}
 	});
@@ -9708,6 +9817,7 @@ var _user$project$View$view = function (model) {
 					[
 						_elm_lang$html$Html$text('ELM 2048')
 					])),
+				_user$project$View$showGameWon(model.gameState),
 				A2(
 				_elm_lang$html$Html$div,
 				_elm_lang$core$Native_List.fromArray(
@@ -9738,6 +9848,21 @@ var _user$project$View$view = function (model) {
 						_elm_lang$core$Native_List.fromArray(
 							[
 								_user$project$View$prettyPrint(model.matrix)
+							])),
+						A2(
+						_elm_lang$html$Html$button,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Attributes$style(
+								_elm_lang$core$Native_List.fromArray(
+									[
+										{ctor: '_Tuple2', _0: 'text-align', _1: 'center'}
+									])),
+								_elm_lang$html$Html_Events$onClick(_user$project$Update$Reset)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('reset')
 							]))
 					]))
 			]));
