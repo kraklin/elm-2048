@@ -100,10 +100,7 @@ showGameWon : Model.GameState -> Html Msg
 showGameWon state =
     case state of
         Model.Won ->
-            div []
-                [ h2 [] [ text "You have Won" ]
-                , button [ onClick Update.Reset ] [ text "reset" ]
-                ]
+            h2 [] [ text "You have Won" ]
 
         Model.Playing ->
             div [] []
@@ -119,6 +116,7 @@ view model =
             ]
         ]
         [ h1 [ style [ ( "text-align", "center" ) ] ] [ text "ELM 2048" ]
+        , button [ onClick Update.Reset ] [ text "reset" ]
         , showGameWon model.gameState
         , div
             [ style
