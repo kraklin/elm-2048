@@ -116,7 +116,6 @@ view model =
             ]
         ]
         [ h1 [ style [ ( "text-align", "center" ) ] ] [ text "ELM 2048" ]
-        , button [ onClick Update.Reset ] [ text "reset" ]
         , showGameWon model.gameState
         , div
             [ style
@@ -135,5 +134,10 @@ view model =
                 ]
                 [ prettyPrint model.matrix
                 ]
+            , button
+                [ style [ ( "text-align", "center" ) ]
+                , onClick Update.Reset
+                ]
+                [ text "reset" ]
             ]
         ]
