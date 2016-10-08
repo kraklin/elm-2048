@@ -12,6 +12,7 @@ type alias Model =
 type GameState
     = Playing
     | Won
+    | NoMoreMoves
 
 
 init : ( Model, Cmd a )

@@ -14,6 +14,7 @@ type Msg
     | NewTile Int
     | Reset
     | WinGame
+    | LoseGame
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -57,6 +58,9 @@ update msg model =
         WinGame ->
             ( { model | gameState = Won }, Cmd.none )
 
+        LoseGame ->
+            ( { model | gameState = NoMoreMoves }, Cmd.none )
+
         Reset ->
             Model.init
 
@@ -71,6 +75,8 @@ testAndMove model moveFunc =
             Model.Playing ->
                 if (checkWin newMatrix) then
                     update WinGame { model | matrix = newMatrix }
+                else if (checkLose model.matrix) then
+                    update LoseGame model
                 else if (newMatrix /= model.matrix) then
                     update SpawnTile { model | matrix = newMatrix }
                 else
@@ -92,6 +98,13 @@ checkWin matrix =
             True
         else
             False
+
+
+checkLose : Matrix (Maybe Int) -> Bool
+checkLose matrix =
+    [ moveLeft, moveRight, moveDown, moveUp ]
+        |> List.map (\fnc -> fnc matrix)
+        |> List.all (\movedMatrix -> movedMatrix == matrix)
 
 
 getRowFromMatrix : Int -> Matrix a -> List a

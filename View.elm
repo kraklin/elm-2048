@@ -100,7 +100,10 @@ showGameWon : Model.GameState -> Html Msg
 showGameWon state =
     case state of
         Model.Won ->
-            h2 [] [ text "You have Won" ]
+            h2 [] [ text "You have Won, congratulations" ]
+
+        Model.NoMoreMoves ->
+            h2 [] [ text "No more moves :(" ]
 
         Model.Playing ->
             div [] []
