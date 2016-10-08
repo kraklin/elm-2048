@@ -1,6 +1,6 @@
 module Update exposing (..)
 
-import Model exposing (GameState(..), Model)
+import Model exposing (GameState(..), Model, init)
 import Matrix exposing (..)
 import Array
 import Keyboard
@@ -12,6 +12,7 @@ type Msg
     = KeyMsg Keyboard.KeyCode
     | SpawnTile
     | NewTile Int
+    | Reset
     | WinGame
 
 
@@ -55,6 +56,9 @@ update msg model =
 
         WinGame ->
             ( { model | gameState = Won }, Cmd.none )
+
+        Reset ->
+            Model.init
 
 
 testAndMove : Model -> (Matrix (Maybe Int) -> Matrix (Maybe Int)) -> ( Model, Cmd Msg )

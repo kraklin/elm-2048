@@ -2,8 +2,9 @@ module View exposing (view)
 
 import Update exposing (Msg)
 import Model exposing (Model)
-import Html exposing (Html, div, text, h1, h2)
+import Html exposing (Html, div, text, h1, h2, button)
 import Html.Attributes exposing (style)
+import Html.Events exposing (onClick)
 import Matrix exposing (..)
 import Array exposing (..)
 import Dict exposing (..)
@@ -95,11 +96,14 @@ matrixToDivs matrix =
             |> Html.div []
 
 
-showGameWon : Model.GameState -> Html msg
+showGameWon : Model.GameState -> Html Msg
 showGameWon state =
     case state of
         Model.Won ->
-            h2 [] [ text "You have Won" ]
+            div []
+                [ h2 [] [ text "You have Won" ]
+                , button [ onClick Update.Reset ] [ text "reset" ]
+                ]
 
         Model.Playing ->
             div [] []
