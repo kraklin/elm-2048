@@ -2,7 +2,7 @@ module View exposing (view)
 
 import Update exposing (Msg)
 import Model exposing (Model)
-import Html exposing (Html, div, text, h1)
+import Html exposing (Html, div, text, h1, h2)
 import Html.Attributes exposing (style)
 import Matrix exposing (..)
 import Array exposing (..)
@@ -95,6 +95,16 @@ matrixToDivs matrix =
             |> Html.div []
 
 
+showGameWon : Model.GameState -> Html msg
+showGameWon state =
+    case state of
+        Model.Won ->
+            h2 [] [ text "You have Won" ]
+
+        Model.Playing ->
+            div [] []
+
+
 view : Model -> Html.Html Msg
 view model =
     div
@@ -105,6 +115,7 @@ view model =
             ]
         ]
         [ h1 [ style [ ( "text-align", "center" ) ] ] [ text "ELM 2048" ]
+        , showGameWon model.gameState
         , div
             [ style
                 [ ( "width", "450px" )

@@ -1,11 +1,17 @@
-module Model exposing (Model, init, allTilesMatrix)
+module Model exposing (Model, GameState(..), init, allTilesMatrix)
 
 import Matrix exposing (..)
 
 
 type alias Model =
     { matrix : Matrix (Maybe Int)
+    , gameState : GameState
     }
+
+
+type GameState
+    = Playing
+    | Won
 
 
 init : ( Model, Cmd a )
@@ -14,6 +20,7 @@ init =
             --allTilesMatrix
             Matrix.repeat 4 4 (Nothing)
                 |> Matrix.set 0 0 (Just 2)
+      , gameState = Playing
       }
     , Cmd.none
     )

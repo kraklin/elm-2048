@@ -1,6 +1,6 @@
 module Update exposing (..)
 
-import Model exposing (Model)
+import Model exposing (GameState(..), Model)
 import Matrix exposing (..)
 import Array
 import Keyboard
@@ -12,6 +12,7 @@ type Msg
     = KeyMsg Keyboard.KeyCode
     | SpawnTile
     | NewTile Int
+    | WinGame
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -52,6 +53,9 @@ update msg model =
                 , Cmd.none
                 )
 
+        WinGame ->
+            ( { model | gameState = Won }, Cmd.none )
+
 
 testAndMove : Model -> (Matrix (Maybe Int) -> Matrix (Maybe Int)) -> ( Model, Cmd Msg )
 testAndMove model moveFunc =
@@ -59,10 +63,31 @@ testAndMove model moveFunc =
         newMatrix =
             moveFunc model.matrix
     in
-        if (newMatrix /= model.matrix) then
-            update SpawnTile { model | matrix = newMatrix }
+        case model.gameState of
+            Model.Playing ->
+                if (checkWin newMatrix) then
+                    update WinGame { model | matrix = newMatrix }
+                else if (newMatrix /= model.matrix) then
+                    update SpawnTile { model | matrix = newMatrix }
+                else
+                    ( model, Cmd.none )
+
+            _ ->
+                ( model, Cmd.none )
+
+
+checkWin : Matrix (Maybe Int) -> Bool
+checkWin matrix =
+    let
+        filteredArray =
+            matrix
+                |> Matrix.toIndexedArray
+                |> Array.filter (\( coord, val ) -> val == Just 2048)
+    in
+        if ((Array.length filteredArray) >= 1) then
+            True
         else
-            ( model, Cmd.none )
+            False
 
 
 getRowFromMatrix : Int -> Matrix a -> List a
@@ -141,16 +166,11 @@ convertFromMaybes list =
 castToFilledMaybeList : List Int -> List (Maybe Int)
 castToFilledMaybeList list =
     let
-        listOfMaybes =
-            List.map Just list
-
-        toFill =
-            4 - List.length list
+        listArray =
+            Array.fromList list
     in
-        if (toFill == 0) then
-            listOfMaybes
-        else
-            List.append listOfMaybes (List.repeat toFill Nothing)
+        [0..3]
+            |> List.map (\p -> Array.get p listArray)
 
 
 getCoordinatesOfEmptySpace : Matrix (Maybe a) -> List ( Int, Int )

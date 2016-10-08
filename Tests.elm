@@ -116,45 +116,45 @@ rotationTests =
             (let
                 initialMatrix =
                     (Matrix.fromList
-                        [ [(Just 1),(Just 2),(Just 3)]
-                        , [(Just 4),(Just 5),(Just 6)]
-                        , [(Just 7),(Just 8),(Just 9)]
+                        [ [ (Just 1), (Just 2), (Just 3) ]
+                        , [ (Just 4), (Just 5), (Just 6) ]
+                        , [ (Just 7), (Just 8), (Just 9) ]
                         ]
                     )
-                    |> Maybe.withDefault Matrix.empty
+                        |> Maybe.withDefault Matrix.empty
 
                 finalMatrix =
                     (Matrix.fromList
-                        [ [(Just 7),(Just 4),(Just 1)]
-                        , [(Just 8),(Just 5),(Just 2)]
-                        , [(Just 9),(Just 6),(Just 3)]
+                        [ [ (Just 7), (Just 4), (Just 1) ]
+                        , [ (Just 8), (Just 5), (Just 2) ]
+                        , [ (Just 9), (Just 6), (Just 3) ]
                         ]
                     )
-                    |> Maybe.withDefault Matrix.empty
+                        |> Maybe.withDefault Matrix.empty
              in
                 initialMatrix
                     |> Update.rotateMatrixRight
                     |> assertEqual finalMatrix
             )
-            ,test "rotate to left"
+        , test "rotate to left"
             (let
                 initialMatrix =
                     (Matrix.fromList
-                        [ [(Just 7),(Just 4),(Just 1)]
-                        , [(Just 8),(Just 5),(Just 2)]
-                        , [(Just 9),(Just 6),(Just 3)]
+                        [ [ (Just 7), (Just 4), (Just 1) ]
+                        , [ (Just 8), (Just 5), (Just 2) ]
+                        , [ (Just 9), (Just 6), (Just 3) ]
                         ]
                     )
-                    |> Maybe.withDefault Matrix.empty
+                        |> Maybe.withDefault Matrix.empty
 
                 finalMatrix =
                     (Matrix.fromList
-                        [ [(Just 1),(Just 2),(Just 3)]
-                        , [(Just 4),(Just 5),(Just 6)]
-                        , [(Just 7),(Just 8),(Just 9)]
+                        [ [ (Just 1), (Just 2), (Just 3) ]
+                        , [ (Just 4), (Just 5), (Just 6) ]
+                        , [ (Just 7), (Just 8), (Just 9) ]
                         ]
                     )
-                    |> Maybe.withDefault Matrix.empty
+                        |> Maybe.withDefault Matrix.empty
              in
                 initialMatrix
                     |> Update.rotateMatrixLeft
