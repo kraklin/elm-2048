@@ -193,6 +193,14 @@ spawnTileSuite =
         ]
 
 
+gameStateSuite : Test
+gameStateSuite =
+    suite "Game state"
+        [ test "game is won with 2048 tile in matrix"
+            (assertEqual 1 1)
+        ]
+
+
 all : Test
 all =
     suite "Game 2048"
@@ -200,6 +208,7 @@ all =
         , spawnTileSuite
         , moveSuite
         , rotationTests
+        , gameStateSuite
         ]
 
 

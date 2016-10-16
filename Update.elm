@@ -75,8 +75,8 @@ testAndMove model moveFunc =
             Model.Playing ->
                 if (checkWin newMatrix) then
                     update WinGame { model | matrix = newMatrix }
-                else if (checkLose model.matrix) then
-                    update LoseGame model
+                else if (checkLose newMatrix) then
+                    update LoseGame { model | matrix = newMatrix }
                 else if (newMatrix /= model.matrix) then
                     update SpawnTile { model | matrix = newMatrix }
                 else
