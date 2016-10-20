@@ -4,7 +4,7 @@ import Matrix exposing (..)
 
 
 type alias Model =
-    { matrix : Matrix (Maybe Int)
+    { tiles : Matrix (Maybe Int)
     , gameState : GameState
     }
 
@@ -17,7 +17,7 @@ type GameState
 
 init : ( Model, Cmd a )
 init =
-    ( { matrix =
+    ( { tiles =
             --allTilesMatrix
             Matrix.repeat 4 4 (Nothing)
                 |> Matrix.set 0 0 (Just 2)

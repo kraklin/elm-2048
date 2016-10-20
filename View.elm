@@ -43,15 +43,23 @@ valueColorMap =
         ]
 
 
-prettyPrint : Matrix (Maybe Int) -> Html Msg
-prettyPrint matrix =
-    matrix
-        |> Matrix.indexedMap drawTile
+prettyPrint : List (Maybe Int) -> Html Msg
+prettyPrint list =
+    list
+        |> List.map drawTile
         |> matrixToDivs
 
 
-drawTile : Int -> Int -> Maybe Int -> Html Msg
-drawTile x y value =
+matrixToList : Matrix (Maybe Int) -> List (Maybe Int)
+matrixToList matrix =
+    matrix
+        |> Matrix.toIndexedArray
+        |> Array.map (\( ( x, y ), value ) -> value)
+        |> Array.toList
+
+
+drawTile : Maybe Int -> Html Msg
+drawTile value =
     case value of
         Nothing ->
             div
@@ -79,21 +87,21 @@ drawTile x y value =
                     [ text (toString value) ]
 
 
-matrixToDivs : Matrix (Html.Html Msg) -> Html.Html Msg
-matrixToDivs matrix =
+matrixToDivs : List (Html.Html Msg) -> Html.Html Msg
+matrixToDivs list =
     let
         makeRow y =
-            Matrix.getRow y matrix
-                |> Maybe.map (Array.toList)
-                |> Maybe.withDefault []
+            getRowList y list
                 |> Html.div []
-
-        height =
-            Matrix.height matrix
     in
-        [0..height]
+        [0..4]
             |> List.map makeRow
             |> Html.div []
+
+
+getRowList : Int -> List (Html.Html Msg) -> List (Html.Html Msg)
+getRowList row list =
+    list |> List.drop (row * 4) |> List.take 4
 
 
 showGameWon : Model.GameState -> Html Msg
@@ -135,7 +143,7 @@ view model =
                     , ( "padding", "5px" )
                     ]
                 ]
-                [ prettyPrint model.matrix
+                [ model.tiles |> matrixToList |> prettyPrint
                 ]
             , button
                 [ style [ ( "text-align", "center" ) ]

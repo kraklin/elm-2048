@@ -40,7 +40,7 @@ update msg model =
         SpawnTile ->
             let
                 coordsCount =
-                    model.matrix
+                    model.tiles
                         |> getCoordinatesOfEmptySpace
                         |> List.length
             in
@@ -49,9 +49,9 @@ update msg model =
         NewTile position ->
             let
                 coordList =
-                    getCoordinatesOfEmptySpace model.matrix
+                    getCoordinatesOfEmptySpace model.tiles
             in
-                ( { model | matrix = spawnTile coordList position model.matrix }
+                ( { model | tiles = spawnTile coordList position model.tiles }
                 , Cmd.none
                 )
 
@@ -69,16 +69,16 @@ testAndMove : Model -> (Matrix (Maybe Int) -> Matrix (Maybe Int)) -> ( Model, Cm
 testAndMove model moveFunc =
     let
         newMatrix =
-            moveFunc model.matrix
+            moveFunc model.tiles
     in
         case model.gameState of
             Model.Playing ->
                 if (checkWin newMatrix) then
-                    update WinGame { model | matrix = newMatrix }
+                    update WinGame { model | tiles = newMatrix }
                 else if (checkLose newMatrix) then
-                    update LoseGame { model | matrix = newMatrix }
-                else if (newMatrix /= model.matrix) then
-                    update SpawnTile { model | matrix = newMatrix }
+                    update LoseGame { model | tiles = newMatrix }
+                else if (newMatrix /= model.tiles) then
+                    update SpawnTile { model | tiles = newMatrix }
                 else
                     ( model, Cmd.none )
 
@@ -87,10 +87,10 @@ testAndMove model moveFunc =
 
 
 checkWin : Matrix (Maybe Int) -> Bool
-checkWin matrix =
+checkWin tiles =
     let
         filteredArray =
-            matrix
+            tiles
                 |> Matrix.toIndexedArray
                 |> Array.filter (\( coord, val ) -> val == Just 2048)
     in
@@ -101,25 +101,25 @@ checkWin matrix =
 
 
 checkLose : Matrix (Maybe Int) -> Bool
-checkLose matrix =
+checkLose tiles =
     [ moveLeft, moveRight, moveDown, moveUp ]
-        |> List.map (\fnc -> fnc matrix)
-        |> List.all (\movedMatrix -> movedMatrix == matrix)
+        |> List.map (\fnc -> fnc tiles)
+        |> List.all (\movedMatrix -> movedMatrix == tiles)
 
 
 getRowFromMatrix : Int -> Matrix a -> List a
-getRowFromMatrix rownum matrix =
-    matrix
+getRowFromMatrix rownum tiles =
+    tiles
         |> Matrix.getRow rownum
         |> Maybe.withDefault Array.empty
         |> Array.toList
 
 
 moveLeft : Matrix (Maybe Int) -> Matrix (Maybe Int)
-moveLeft matrix =
+moveLeft tiles =
     let
         makeRow n =
-            matrix
+            tiles
                 |> getRowFromMatrix n
                 |> convertFromMaybes
                 |> mergeTiles
@@ -132,8 +132,8 @@ moveLeft matrix =
 
 
 moveRight : Matrix (Maybe Int) -> Matrix (Maybe Int)
-moveRight matrix =
-    matrix
+moveRight tiles =
+    tiles
         |> rotateMatrixRight
         |> rotateMatrixRight
         |> moveLeft
@@ -142,16 +142,16 @@ moveRight matrix =
 
 
 moveDown : Matrix (Maybe Int) -> Matrix (Maybe Int)
-moveDown matrix =
-    matrix
+moveDown tiles =
+    tiles
         |> rotateMatrixRight
         |> moveLeft
         |> rotateMatrixLeft
 
 
 moveUp : Matrix (Maybe Int) -> Matrix (Maybe Int)
-moveUp matrix =
-    matrix
+moveUp tiles =
+    tiles
         |> rotateMatrixLeft
         |> moveLeft
         |> rotateMatrixRight
@@ -191,8 +191,8 @@ castToFilledMaybeList list =
 
 
 getCoordinatesOfEmptySpace : Matrix (Maybe a) -> List ( Int, Int )
-getCoordinatesOfEmptySpace matrix =
-    matrix
+getCoordinatesOfEmptySpace tiles =
+    tiles
         |> Matrix.toIndexedArray
         |> Array.filter (\( coord, val ) -> val == Nothing)
         |> Array.map (\( coord, val ) -> coord)
@@ -200,7 +200,7 @@ getCoordinatesOfEmptySpace matrix =
 
 
 spawnTile : List ( Int, Int ) -> Int -> Matrix (Maybe Int) -> Matrix (Maybe Int)
-spawnTile listOfPlaces position matrix =
+spawnTile listOfPlaces position tiles =
     let
         selectedCoords =
             listOfPlaces
@@ -210,43 +210,43 @@ spawnTile listOfPlaces position matrix =
     in
         case selectedCoords of
             Nothing ->
-                matrix
+                tiles
 
             Just ( x, y ) ->
-                matrix
+                tiles
                     |> Matrix.set x y (Just 2)
 
 
 transposeM : Matrix (Maybe Int) -> Matrix (Maybe Int)
-transposeM matrix =
-    matrix
+transposeM tiles =
+    tiles
         |> Matrix.indexedMap
             (\x y v ->
-                Maybe.withDefault Nothing (Matrix.get y x matrix)
+                Maybe.withDefault Nothing (Matrix.get y x tiles)
             )
         |> reverseRows
 
 
 reverseRows : Matrix (Maybe Int) -> Matrix (Maybe Int)
-reverseRows matrix =
+reverseRows tiles =
     let
         reverseRow n =
-            matrix
+            tiles
                 |> getRowFromMatrix n
                 |> List.reverse
                 |> Debug.log "reversed"
     in
-        [0..((Matrix.height matrix) - 1)]
+        [0..((Matrix.height tiles) - 1)]
             |> List.map reverseRow
             |> Matrix.fromList
             |> Maybe.withDefault Matrix.empty
 
 
 rotateMatrixRight : Matrix (Maybe Int) -> Matrix (Maybe Int)
-rotateMatrixRight matrix =
-    transposeM matrix
+rotateMatrixRight tiles =
+    transposeM tiles
 
 
 rotateMatrixLeft : Matrix (Maybe Int) -> Matrix (Maybe Int)
-rotateMatrixLeft matrix =
-    matrix |> transposeM |> transposeM |> transposeM
+rotateMatrixLeft tiles =
+    tiles |> transposeM |> transposeM |> transposeM
