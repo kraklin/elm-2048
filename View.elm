@@ -1,12 +1,10 @@
 module View exposing (view)
 
-import Update exposing (Msg)
+import Update exposing (Msg, matrixToList)
 import Model exposing (Model)
 import Html exposing (Html, div, text, h1, h2, button)
 import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
-import Matrix exposing (..)
-import Array exposing (..)
 import Dict exposing (..)
 
 
@@ -50,14 +48,6 @@ prettyPrint list =
         |> matrixToDivs
 
 
-matrixToList : Matrix (Maybe Int) -> List (Maybe Int)
-matrixToList matrix =
-    matrix
-        |> Matrix.toIndexedArray
-        |> Array.map (\( ( x, y ), value ) -> value)
-        |> Array.toList
-
-
 drawTile : Maybe Int -> Html Msg
 drawTile value =
     case value of
@@ -91,7 +81,7 @@ matrixToDivs : List (Html.Html Msg) -> Html.Html Msg
 matrixToDivs list =
     let
         makeRow y =
-            getRowList y list
+            getRowList list y
                 |> Html.div []
     in
         [0..4]
@@ -99,8 +89,8 @@ matrixToDivs list =
             |> Html.div []
 
 
-getRowList : Int -> List (Html.Html Msg) -> List (Html.Html Msg)
-getRowList row list =
+getRowList : List (Html.Html Msg) -> Int -> List (Html.Html Msg)
+getRowList list row =
     list |> List.drop (row * 4) |> List.take 4
 
 

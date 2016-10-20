@@ -65,17 +65,28 @@ update msg model =
             Model.init
 
 
+matrixToList : Matrix (Maybe Int) -> List (Maybe Int)
+matrixToList matrix =
+    matrix
+        |> Matrix.toIndexedArray
+        |> Array.map (\( ( x, y ), value ) -> value)
+        |> Array.toList
+
+
 testAndMove : Model -> (Matrix (Maybe Int) -> Matrix (Maybe Int)) -> ( Model, Cmd Msg )
 testAndMove model moveFunc =
     let
         newMatrix =
             moveFunc model.tiles
+
+        newTilesList =
+            newMatrix |> matrixToList
     in
         case model.gameState of
             Model.Playing ->
-                if (checkWin newMatrix) then
+                if (checkWin newTilesList) then
                     update WinGame { model | tiles = newMatrix }
-                else if (checkLose newMatrix) then
+                else if (checkLose newTilesList) then
                     update LoseGame { model | tiles = newMatrix }
                 else if (newMatrix /= model.tiles) then
                     update SpawnTile { model | tiles = newMatrix }
@@ -86,25 +97,28 @@ testAndMove model moveFunc =
                 ( model, Cmd.none )
 
 
-checkWin : Matrix (Maybe Int) -> Bool
+checkWin : List (Maybe Int) -> Bool
 checkWin tiles =
     let
-        filteredArray =
+        filteredList =
             tiles
-                |> Matrix.toIndexedArray
-                |> Array.filter (\( coord, val ) -> val == Just 2048)
+                |> List.filter (\val -> val == Just 2048)
     in
-        if ((Array.length filteredArray) >= 1) then
+        if ((List.length filteredList) >= 1) then
             True
         else
             False
 
 
-checkLose : Matrix (Maybe Int) -> Bool
+checkLose : List (Maybe Int) -> Bool
 checkLose tiles =
-    [ moveLeft, moveRight, moveDown, moveUp ]
-        |> List.map (\fnc -> fnc tiles)
-        |> List.all (\movedMatrix -> movedMatrix == tiles)
+    False
+
+
+
+-- [ moveLeft, moveRight, moveDown, moveUp ]
+--     |> List.map (\fnc -> fnc tiles)
+--     |> List.all (\movedMatrix -> movedMatrix == tiles)
 
 
 getRowFromMatrix : Int -> Matrix a -> List a
@@ -236,7 +250,7 @@ reverseRows tiles =
                 |> List.reverse
                 |> Debug.log "reversed"
     in
-        [0..((Matrix.height tiles) - 1)]
+        [0..3]
             |> List.map reverseRow
             |> Matrix.fromList
             |> Maybe.withDefault Matrix.empty
