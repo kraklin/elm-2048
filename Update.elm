@@ -136,21 +136,9 @@ checkWin tiles =
 
 checkLose : List Tile -> Bool
 checkLose tiles =
-    False
-
-
-
--- [ moveLeft, moveRight, moveDown, moveUp ]
---     |> List.map (\fnc -> fnc tiles)
---     |> List.all (\movedMatrix -> movedMatrix == tiles)
-
-
-getRowFromMatrix : Int -> Matrix a -> List a
-getRowFromMatrix rownum tiles =
-    tiles
-        |> Matrix.getRow rownum
-        |> Maybe.withDefault Array.empty
-        |> Array.toList
+    [ moveLeft, moveRight, moveDown, moveUp ]
+        |> List.map (\fnc -> fnc tiles)
+        |> List.all (\movedMatrix -> movedMatrix == tiles)
 
 
 moveLeft : List Tile -> List Tile
@@ -170,39 +158,27 @@ moveLeft tiles =
 moveRight : List Tile -> List Tile
 moveRight tiles =
     tiles
-        |> listToMatrix
         |> rotateMatrixRight
         |> rotateMatrixRight
-        |> matrixToList
         |> moveLeft
-        |> listToMatrix
         |> rotateMatrixLeft
         |> rotateMatrixLeft
-        |> matrixToList
 
 
 moveDown : List Tile -> List Tile
 moveDown tiles =
     tiles
-        |> listToMatrix
         |> rotateMatrixRight
-        |> matrixToList
         |> moveLeft
-        |> listToMatrix
         |> rotateMatrixLeft
-        |> matrixToList
 
 
 moveUp : List Tile -> List Tile
 moveUp tiles =
     tiles
-        |> listToMatrix
         |> rotateMatrixLeft
-        |> matrixToList
         |> moveLeft
-        |> listToMatrix
         |> rotateMatrixRight
-        |> matrixToList
 
 
 mergeTiles : List Int -> List Int
@@ -265,36 +241,52 @@ spawnTile listOfPlaces position tiles =
                     |> Matrix.set x y (Just 2)
 
 
-transposeM : Matrix Tile -> Matrix Tile
+transposeM : List Tile -> List Tile
 transposeM tiles =
-    tiles
-        |> Matrix.indexedMap
-            (\x y v ->
-                Maybe.withDefault Nothing (Matrix.get y x tiles)
-            )
-        |> reverseRows
+    let
+        getSwapedCoords p =
+            ( snd (positionToCoords p), fst (positionToCoords p) )
+                |> coordsToPosition
+    in
+        tiles
+            |> Array.fromList
+            |> Array.indexedMap
+                (\position v ->
+                    (Array.fromList tiles)
+                        |> Array.get (getSwapedCoords position)
+                        |> Maybe.withDefault Nothing
+                )
+            |> Array.toList
+            |> reverseRows
 
 
-reverseRows : Matrix Tile -> Matrix Tile
+positionToCoords : Int -> ( Int, Int )
+positionToCoords position =
+    ( position % 4, position // 4 )
+
+
+coordsToPosition : ( Int, Int ) -> Int
+coordsToPosition ( x, y ) =
+    y * 4 + x
+
+
+reverseRows : List Tile -> List Tile
 reverseRows tiles =
     let
         reverseRow n =
-            tiles
-                |> getRowFromMatrix n
+            getRowList tiles n
                 |> List.reverse
-                |> Debug.log "reversed"
     in
         [0..3]
             |> List.map reverseRow
-            |> Matrix.fromList
-            |> Maybe.withDefault Matrix.empty
+            |> List.concat
 
 
-rotateMatrixRight : Matrix Tile -> Matrix Tile
+rotateMatrixRight : List Tile -> List Tile
 rotateMatrixRight tiles =
     transposeM tiles
 
 
-rotateMatrixLeft : Matrix Tile -> Matrix Tile
+rotateMatrixLeft : List Tile -> List Tile
 rotateMatrixLeft tiles =
     tiles |> transposeM |> transposeM |> transposeM
