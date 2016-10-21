@@ -1,6 +1,6 @@
 module Update exposing (..)
 
-import Model exposing (GameState(..), Model, init)
+import Model exposing (GameState(..), Model, Tile, init)
 import Matrix exposing (..)
 import Array
 import Keyboard
@@ -65,7 +65,7 @@ update msg model =
             Model.init
 
 
-matrixToList : Matrix (Maybe Int) -> List (Maybe Int)
+matrixToList : Matrix Tile -> List Tile
 matrixToList matrix =
     matrix
         |> Matrix.toIndexedArray
@@ -73,11 +73,35 @@ matrixToList matrix =
         |> Array.toList
 
 
-testAndMove : Model -> (Matrix (Maybe Int) -> Matrix (Maybe Int)) -> ( Model, Cmd Msg )
+getRowList : List Tile -> Int -> List Tile
+getRowList list row =
+    list
+        |> List.drop (row * 4)
+        |> List.take 4
+
+
+listToMatrix : List Tile -> Matrix Tile
+listToMatrix list =
+    let
+        makeRow y =
+            getRowList list y
+    in
+        [0..3]
+            |> List.map makeRow
+            |> Matrix.fromList
+            |> Maybe.withDefault Matrix.empty
+
+
+testAndMove : Model -> (List Tile -> List Tile) -> ( Model, Cmd Msg )
 testAndMove model moveFunc =
     let
+        tilesList =
+            model.tiles
+                |> matrixToList
+
         newMatrix =
-            moveFunc model.tiles
+            moveFunc tilesList
+                |> listToMatrix
 
         newTilesList =
             newMatrix |> matrixToList
@@ -97,7 +121,7 @@ testAndMove model moveFunc =
                 ( model, Cmd.none )
 
 
-checkWin : List (Maybe Int) -> Bool
+checkWin : List Tile -> Bool
 checkWin tiles =
     let
         filteredList =
@@ -110,7 +134,7 @@ checkWin tiles =
             False
 
 
-checkLose : List (Maybe Int) -> Bool
+checkLose : List Tile -> Bool
 checkLose tiles =
     False
 
@@ -129,46 +153,56 @@ getRowFromMatrix rownum tiles =
         |> Array.toList
 
 
-moveLeft : Matrix (Maybe Int) -> Matrix (Maybe Int)
+moveLeft : List Tile -> List Tile
 moveLeft tiles =
     let
         makeRow n =
-            tiles
-                |> getRowFromMatrix n
+            getRowList tiles n
                 |> convertFromMaybes
                 |> mergeTiles
                 |> castToFilledMaybeList
     in
         [0..3]
             |> List.map makeRow
-            |> Matrix.fromList
-            |> Maybe.withDefault Matrix.empty
+            |> List.concat
 
 
-moveRight : Matrix (Maybe Int) -> Matrix (Maybe Int)
+moveRight : List Tile -> List Tile
 moveRight tiles =
     tiles
+        |> listToMatrix
         |> rotateMatrixRight
         |> rotateMatrixRight
+        |> matrixToList
         |> moveLeft
+        |> listToMatrix
         |> rotateMatrixLeft
         |> rotateMatrixLeft
+        |> matrixToList
 
 
-moveDown : Matrix (Maybe Int) -> Matrix (Maybe Int)
+moveDown : List Tile -> List Tile
 moveDown tiles =
     tiles
+        |> listToMatrix
         |> rotateMatrixRight
+        |> matrixToList
         |> moveLeft
+        |> listToMatrix
         |> rotateMatrixLeft
+        |> matrixToList
 
 
-moveUp : Matrix (Maybe Int) -> Matrix (Maybe Int)
+moveUp : List Tile -> List Tile
 moveUp tiles =
     tiles
+        |> listToMatrix
         |> rotateMatrixLeft
+        |> matrixToList
         |> moveLeft
+        |> listToMatrix
         |> rotateMatrixRight
+        |> matrixToList
 
 
 mergeTiles : List Int -> List Int
@@ -188,13 +222,13 @@ mergeTiles listToMerge =
                 listToMerge
 
 
-convertFromMaybes : List (Maybe Int) -> List Int
+convertFromMaybes : List Tile -> List Int
 convertFromMaybes list =
     list
         |> List.filterMap identity
 
 
-castToFilledMaybeList : List Int -> List (Maybe Int)
+castToFilledMaybeList : List Int -> List Tile
 castToFilledMaybeList list =
     let
         listArray =
@@ -213,7 +247,7 @@ getCoordinatesOfEmptySpace tiles =
         |> Array.toList
 
 
-spawnTile : List ( Int, Int ) -> Int -> Matrix (Maybe Int) -> Matrix (Maybe Int)
+spawnTile : List ( Int, Int ) -> Int -> Matrix Tile -> Matrix Tile
 spawnTile listOfPlaces position tiles =
     let
         selectedCoords =
@@ -231,7 +265,7 @@ spawnTile listOfPlaces position tiles =
                     |> Matrix.set x y (Just 2)
 
 
-transposeM : Matrix (Maybe Int) -> Matrix (Maybe Int)
+transposeM : Matrix Tile -> Matrix Tile
 transposeM tiles =
     tiles
         |> Matrix.indexedMap
@@ -241,7 +275,7 @@ transposeM tiles =
         |> reverseRows
 
 
-reverseRows : Matrix (Maybe Int) -> Matrix (Maybe Int)
+reverseRows : Matrix Tile -> Matrix Tile
 reverseRows tiles =
     let
         reverseRow n =
@@ -256,11 +290,11 @@ reverseRows tiles =
             |> Maybe.withDefault Matrix.empty
 
 
-rotateMatrixRight : Matrix (Maybe Int) -> Matrix (Maybe Int)
+rotateMatrixRight : Matrix Tile -> Matrix Tile
 rotateMatrixRight tiles =
     transposeM tiles
 
 
-rotateMatrixLeft : Matrix (Maybe Int) -> Matrix (Maybe Int)
+rotateMatrixLeft : Matrix Tile -> Matrix Tile
 rotateMatrixLeft tiles =
     tiles |> transposeM |> transposeM |> transposeM

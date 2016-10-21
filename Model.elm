@@ -1,4 +1,4 @@
-module Model exposing (Model, GameState(..), init, allTilesMatrix)
+module Model exposing (Model, GameState(..), init, allTilesMatrix, Tile)
 
 import Matrix exposing (..)
 
@@ -7,6 +7,10 @@ type alias Model =
     { tiles : Matrix (Maybe Int)
     , gameState : GameState
     }
+
+
+type alias Tile =
+    Maybe Int
 
 
 type GameState
